@@ -796,15 +796,7 @@ export default function App() {
 
         </div>
 
-        {/* Bottom Bar Footer (Professional Polish Theme) */}
-        <footer className="h-10 bg-slate-900 text-slate-500 px-8 flex items-center justify-between text-[10px] uppercase font-bold tracking-widest shrink-0">
-          <div className="flex gap-6">
-            <span>Workspace: SKP-MAIN-PROD</span>
-          </div>
-          <div className="text-slate-400">
-            © 2026 SKP RICE MILLING • PROFESSIONAL POLISH
-          </div>
-        </footer>
+
 
       </main>
 
