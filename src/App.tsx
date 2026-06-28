@@ -706,6 +706,8 @@ export default function App() {
               loadings={loadings}
               paddyStockBags={paddyStockBags}
               riceStockBags={riceStockBags}
+              paddyBalances={paddyBalances}
+              riceBalances={riceBalances}
             />
           )}
 

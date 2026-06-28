@@ -9,6 +9,8 @@ interface DashboardProps {
   loadings: Loading[];
   paddyStockBags: number;
   riceStockBags: number;
+  paddyBalances: any[];
+  riceBalances: any[];
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
@@ -17,7 +19,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
   productions,
   loadings,
   paddyStockBags,
-  riceStockBags
+  riceStockBags,
+  paddyBalances,
+  riceBalances
 }) => {
   const { t, language } = useTranslation();
   const money = (n: number) => '₹' + Math.round(n).toLocaleString('en-IN');
@@ -77,34 +81,98 @@ export const Dashboard: React.FC<DashboardProps> = ({
   }, 0);
   const grossProfitVal = producedRiceTotalVal - purchaseTotalVal - processingTotalExpense;
 
-  // Custom SVG Bar Chart drawing
-  const renderSVGChart = (title: string, data: { label: string; val: number }[], unit: string, barColor = '#3b82f6') => {
+  // Variety wise aggregates
+  const getVarietyTotals = () => {
+    const map: Record<string, number> = {};
+    purchases.forEach(x => {
+      const k = x.variety || 'Unknown';
+      map[k] = (map[k] || 0) + (x.net || 0);
+    });
+    return Object.entries(map).sort((a,b)=>b[1]-a[1]).map(x=>({label:x[0], val:x[1]}));
+  };
+
+  // Grouped Stock Chart: Paddy vs Rice bags
+  const renderGroupedStockChart = () => {
+    const stockMap: Record<string, { paddy: number; rice: number }> = {};
+    
+    // Aggregate Paddy stock
+    (paddyBalances || []).forEach(pb => {
+      const variety = pb.variety || 'RNR';
+      const key = variety.includes('Rice') ? variety : `${variety} Rice`;
+      if (!stockMap[key]) stockMap[key] = { paddy: 0, rice: 0 };
+      stockMap[key].paddy += pb.balanceBags || 0;
+    });
+
+    // Aggregate Rice stock
+    (riceBalances || []).forEach(rb => {
+      const variety = rb.variety || 'RNR';
+      const key = variety.includes('Rice') ? variety : `${variety} Rice`;
+      if (!stockMap[key]) stockMap[key] = { paddy: 0, rice: 0 };
+      stockMap[key].rice += rb.balanceBags || 0;
+    });
+
+    const data = Object.entries(stockMap)
+      .map(([variety, data]) => ({ variety, paddy: Math.max(0, data.paddy), rice: Math.max(0, data.rice) }))
+      .filter(d => d.paddy > 0 || d.rice > 0);
+
     if (data.length === 0) {
       return (
         <div className="flex items-center justify-center p-8 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-semibold text-slate-400">
-          No data available yet to draw SVG.
+          {t("No stock data available yet.")}
         </div>
       );
     }
-    const maxVal = Math.max(...data.map(d => d.val), 1);
+    
+    const maxVal = Math.max(...data.flatMap(d => [d.paddy, d.rice]), 1);
     
     return (
-      <div className="border border-slate-100 bg-white rounded-2xl p-4 space-y-4">
-        <h4 className="font-bold text-xs text-slate-400 uppercase tracking-wider">{title}</h4>
-        <div className="space-y-3">
-          {data.slice(0, 5).map((row, idx) => {
-            const pct = Math.max(5, (row.val / maxVal) * 100);
+      <div className="border border-slate-200 bg-white rounded-2xl p-6 space-y-6 shadow-xs">
+        <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+          <h4 className="font-bold text-xs text-slate-500 uppercase tracking-wider">{t("Raw vs Milled Inventory")}</h4>
+          <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-wider">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-xs bg-sky-500 block" />
+              <span className="text-slate-500">{t("Paddy Stock")}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-xs bg-emerald-500 block" />
+              <span className="text-slate-500">{t("Rice Stock")}</span>
+            </div>
+          </div>
+        </div>
+        
+        <div className="space-y-4">
+          {data.map((row, idx) => {
+            const paddyPct = Math.max(0, (row.paddy / maxVal) * 100);
+            const ricePct = Math.max(0, (row.rice / maxVal) * 100);
             return (
-              <div key={idx} className="grid grid-cols-[100px_1fr_80px] gap-2.5 items-center text-xs">
-                <div className="font-bold text-slate-600 truncate" title={row.label}>{row.label}</div>
-                <div className="h-3.5 bg-slate-50 rounded-full overflow-hidden border border-slate-100 flex">
-                  <div 
-                    className="h-full rounded-full transition-all duration-500 ease-out" 
-                    style={{ width: `${pct}%`, backgroundColor: barColor }}
-                  />
-                </div>
-                <div className="text-right font-black text-slate-700">
-                  {unit === '₹' ? money(row.val) : `${Math.round(row.val).toLocaleString('en-IN')} ${unit}`}
+              <div key={idx} className="space-y-1.5">
+                <div className="font-bold text-xs text-slate-700 truncate">{t(row.variety)}</div>
+                <div className="space-y-2 bg-slate-50/50 p-2.5 rounded-xl border border-slate-100/80">
+                  {/* Paddy Bar */}
+                  <div className="flex items-center gap-3">
+                    <div className="h-2 bg-slate-200/50 rounded-full overflow-hidden flex-1 flex">
+                      <div 
+                        className="h-full rounded-full transition-all duration-500 ease-out bg-sky-500" 
+                        style={{ width: `${paddyPct}%` }}
+                      />
+                    </div>
+                    <span className="text-[10px] font-black text-sky-700 w-16 text-right">
+                      {Math.round(row.paddy).toLocaleString('en-IN')} {t("bags")}
+                    </span>
+                  </div>
+                  {/* Rice Bar */}
+                  <div className="flex items-center gap-3">
+                    <div className="h-2 bg-slate-200/50 rounded-full overflow-hidden flex-1 flex">
+                      <div 
+                        className="h-full rounded-full transition-all duration-500 ease-out bg-emerald-500" 
+                        style={{ width: `${ricePct}%` }}
+                      />
+                    </div>
+                    <span className="text-[10px] font-black text-emerald-700 w-16 text-right">
+                      {Math.round(row.rice).toLocaleString('en-IN')} {t("bags")}
+                    </span>
+                  </div>
                 </div>
               </div>
             );
@@ -114,14 +182,132 @@ export const Dashboard: React.FC<DashboardProps> = ({
     );
   };
 
-  // Variety wise aggregates
-  const getVarietyTotals = () => {
-    const map: Record<string, number> = {};
-    purchases.forEach(x => {
-      const k = x.variety || 'Unknown';
-      map[k] = (map[k] || 0) + (x.net || 0);
-    });
-    return Object.entries(map).sort((a,b)=>b[1]-a[1]).map(x=>({label:x[0], val:x[1]}));
+  // Vertical Yield Performance Chart
+  const renderYieldPerformanceChart = () => {
+    const completedBatches = productions
+      .filter(p => p.status === 'Completed' && p.yieldPercent > 0)
+      .slice(-5); // Get last 5 completed batches
+       
+    if (completedBatches.length === 0) {
+      return (
+        <div className="flex items-center justify-center p-8 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-semibold text-slate-400">
+          {t("No completed batches available for yield performance.")}
+        </div>
+      );
+    }
+    
+    return (
+      <div className="border border-slate-200 bg-white rounded-2xl p-6 space-y-6 shadow-xs">
+        <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+          <h4 className="font-bold text-xs text-slate-500 uppercase tracking-wider">{t("Milling Yield Performance")}</h4>
+          <span className="text-[10px] font-extrabold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full uppercase border border-emerald-100">
+            {t("Last 5 Batches")}
+          </span>
+        </div>
+        
+        {/* Vertical Bar Chart area */}
+        <div className="h-48 flex items-end justify-around relative pt-8 border-b border-slate-200 px-2">
+          {/* Target Line at 78% */}
+          <div 
+            className="absolute left-0 right-0 border-t border-dashed border-red-500/80 z-10 flex items-center justify-end"
+            style={{ bottom: '78%' }}
+          >
+            <span className="bg-red-55 text-red-600 font-extrabold text-[8px] md:text-[9px] px-1.5 py-0.5 rounded border border-red-200 mr-2 -mt-3">
+              {t("Target Yield")} (78%)
+            </span>
+          </div>
+          
+          {completedBatches.map((b, idx) => {
+            const heightPct = Math.min(100, b.yieldPercent);
+            return (
+              <div key={idx} className="flex flex-col items-center gap-2 group relative z-20">
+                {/* Tooltip on hover */}
+                <div className="absolute bottom-full mb-2 bg-slate-900 text-white text-[10px] p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-lg pointer-events-none whitespace-nowrap z-30">
+                  <p className="font-bold">{t("Batch")}: #{b.batchNo}</p>
+                  <p>{t("Paddy")}: {b.paddyBags} {t("bags")}</p>
+                  <p>{t("Output")}: {b.totalRice} {t("bags")}</p>
+                </div>
+                
+                {/* Bar */}
+                <div className="w-8 md:w-10 bg-slate-100 rounded-t-lg relative h-36 flex items-end">
+                  <div 
+                    className="w-full rounded-t-lg bg-emerald-600 group-hover:bg-emerald-500 transition-all duration-300 relative"
+                    style={{ height: `${heightPct}%` }}
+                  >
+                    {/* Text value inside or on top of bar */}
+                    <span className="absolute -top-5 left-0 right-0 text-center font-black text-[9px] md:text-[10px] text-slate-800">
+                      {b.yieldPercent.toFixed(1)}%
+                    </span>
+                  </div>
+                </div>
+                {/* Batch Label */}
+                <span className="text-[9px] md:text-[10px] font-black text-slate-500 truncate w-14 text-center">
+                  #{b.batchNo}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  // Daily Procurement Trend Chart (current month)
+  const renderProcurementTrendChart = () => {
+    const currentMonth = new Date().toISOString().slice(0, 7); // "YYYY-MM"
+    const dailyMap: Record<string, number> = {};
+    
+    purchases
+      .filter(p => p.date && p.date.startsWith(currentMonth))
+      .forEach(p => {
+        const day = p.date.slice(8, 10); // "DD"
+        dailyMap[day] = (dailyMap[day] || 0) + p.full;
+      });
+      
+    const data = Object.entries(dailyMap)
+      .map(([day, val]) => ({ label: `${t("Day")} ${day}`, val }))
+      .sort((a, b) => Number(a.label.replace(/[^0-9]/g, '')) - Number(b.label.replace(/[^0-9]/g, '')));
+
+    if (data.length === 0) {
+      return (
+        <div className="flex items-center justify-center p-8 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-semibold text-slate-400">
+          {t("No purchases recorded in the current month.")}
+        </div>
+      );
+    }
+    
+    const maxVal = Math.max(...data.map(d => d.val), 1);
+    
+    return (
+      <div className="border border-slate-200 bg-white rounded-2xl p-6 space-y-6 shadow-xs">
+        <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+          <h4 className="font-bold text-xs text-slate-500 uppercase tracking-wider">{t("Daily Procurement Trend")}</h4>
+          <span className="text-[10px] font-extrabold bg-sky-50 text-sky-700 px-2 py-0.5 rounded-full uppercase border border-sky-100">
+            {new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' })}
+          </span>
+        </div>
+        
+        <div className="space-y-3.5">
+          {data.slice(-5).map((row, idx) => {
+            const pct = Math.max(5, (row.val / maxVal) * 100);
+            return (
+              <div key={idx} className="grid grid-cols-[80px_1fr_70px] gap-3 items-center text-xs">
+                <div className="font-bold text-slate-600 truncate">{t(row.label)}</div>
+                <div className="h-3 bg-slate-50 rounded-full overflow-hidden border border-slate-100 flex">
+                  <div 
+                    className="h-full rounded-full transition-all duration-500 ease-out bg-sky-500" 
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+                <div className="text-right font-black text-slate-700">
+                  {row.val.toLocaleString('en-IN')} {t("bags")}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
   };
 
   // Automated warnings lists
@@ -239,23 +425,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* Custom drawn charts */}
-        <div className="space-y-4">
-          {renderSVGChart(
-            t("Top Suppliers (By Supplied weight)"),
-            supplierTotals.map(x => ({ label: x.name, val: x.net })),
-            "kg",
-            "#0284c7"
-          )}
-          {renderSVGChart(
-            t("Variety-wise Procurement (By weight)"),
-            getVarietyTotals(),
-            "kg",
-            "#10b981"
-          )}
+        <div className="space-y-6">
+          {renderGroupedStockChart()}
+          {renderProcurementTrendChart()}
         </div>
 
-        {/* Alerts & warnings list */}
-        <div className="flex flex-col gap-4">
+        {/* Alerts & warnings list & Yield Chart */}
+        <div className="flex flex-col gap-6">
+          {renderYieldPerformanceChart()}
+          
           <div className="bg-white rounded-2xl border border-slate-200 p-4 md:p-6 shadow-sm flex-1">
             <h3 className="font-sans font-bold text-base text-slate-800 border-b border-slate-50 pb-2 mb-4">
               {t("Live Stock & Payable Warnings")}
