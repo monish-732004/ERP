@@ -131,11 +131,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <h4 className="font-bold text-xs text-slate-500 uppercase tracking-wider">{t("Raw vs Milled Inventory")}</h4>
           <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-wider">
             <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-xs bg-teal-500 block" />
+              <span className="w-2.5 h-2.5 rounded-xs bg-[#475569] block" />
               <span className="text-slate-500">{t("Paddy Stock")}</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-xs bg-emerald-500 block" />
+              <span className="w-2.5 h-2.5 rounded-xs bg-[#94a3b8] block" />
               <span className="text-slate-500">{t("Rice Stock")}</span>
             </div>
           </div>
@@ -153,11 +153,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   <div className="flex items-center gap-3">
                     <div className="h-2 bg-slate-200/50 rounded-full overflow-hidden flex-1 flex">
                       <div 
-                        className="h-full rounded-full transition-all duration-500 ease-out bg-teal-600" 
+                        className="h-full rounded-full transition-all duration-500 ease-out bg-[#475569]" 
                         style={{ width: `${paddyPct}%` }}
                       />
                     </div>
-                    <span className="text-[10px] font-black text-teal-700 w-16 text-right">
+                    <span className="text-[10px] font-black text-slate-700 w-16 text-right">
                       {Math.round(row.paddy).toLocaleString('en-IN')} {t("bags")}
                     </span>
                   </div>
@@ -165,11 +165,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   <div className="flex items-center gap-3">
                     <div className="h-2 bg-slate-200/50 rounded-full overflow-hidden flex-1 flex">
                       <div 
-                        className="h-full rounded-full transition-all duration-500 ease-out bg-emerald-600" 
+                        className="h-full rounded-full transition-all duration-500 ease-out bg-[#94a3b8]" 
                         style={{ width: `${ricePct}%` }}
                       />
                     </div>
-                    <span className="text-[10px] font-black text-emerald-700 w-16 text-right">
+                    <span className="text-[10px] font-black text-slate-650 w-16 text-right">
                       {Math.round(row.rice).toLocaleString('en-IN')} {t("bags")}
                     </span>
                   </div>
@@ -200,7 +200,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
       <div className="border border-slate-200 bg-white rounded-2xl p-6 space-y-6 shadow-xs">
         <div className="flex justify-between items-center border-b border-slate-100 pb-3">
           <h4 className="font-bold text-xs text-slate-500 uppercase tracking-wider">{t("Milling Yield Performance")}</h4>
-          <span className="text-[10px] font-extrabold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full uppercase border border-emerald-100">
+          <span className="text-[10px] font-extrabold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full uppercase border border-slate-200">
             {t("Last 5 Batches")}
           </span>
         </div>
@@ -231,7 +231,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 {/* Bar */}
                 <div className="w-8 md:w-10 bg-slate-100 rounded-t-lg relative h-36 flex items-end">
                   <div 
-                    className="w-full rounded-t-lg bg-emerald-600 group-hover:bg-emerald-500 transition-all duration-300 relative"
+                    className={`w-full rounded-t-lg transition-all duration-300 relative ${b.yieldPercent >= 78 ? 'bg-emerald-600 group-hover:bg-emerald-500' : 'bg-amber-500 group-hover:bg-amber-400'}`}
                     style={{ height: `${heightPct}%` }}
                   >
                     {/* Text value inside or on top of bar */}
@@ -282,7 +282,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
       <div className="border border-slate-200 bg-white rounded-2xl p-6 space-y-6 shadow-xs">
         <div className="flex justify-between items-center border-b border-slate-100 pb-3">
           <h4 className="font-bold text-xs text-slate-500 uppercase tracking-wider">{t("Daily Procurement Trend")}</h4>
-          <span className="text-[10px] font-extrabold bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full uppercase border border-amber-100">
+          <span className="text-[10px] font-extrabold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full uppercase border border-slate-200">
             {new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' })}
           </span>
         </div>
@@ -295,7 +295,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <div className="font-bold text-slate-600 truncate">{t(row.label)}</div>
                 <div className="h-3 bg-slate-50 rounded-full overflow-hidden border border-slate-100 flex">
                   <div 
-                    className="h-full rounded-full transition-all duration-500 ease-out bg-amber-500" 
+                    className="h-full rounded-full transition-all duration-500 ease-out bg-[#475569]" 
                     style={{ width: `${pct}%` }}
                   />
                 </div>
@@ -347,49 +347,91 @@ export const Dashboard: React.FC<DashboardProps> = ({
     return note;
   };
 
+  const getCardStyle = (type: 'paddy' | 'rice' | 'profit' | 'balance') => {
+    if (type === 'paddy') {
+      if (paddyStockBags < 600) return { card: 'bg-[#fef2f2] border-red-200', text: 'text-red-950', label: 'text-red-800', small: 'text-red-700' };
+      if (paddyStockBags < 1000) return { card: 'bg-[#fffbeb] border-amber-200', text: 'text-amber-955', label: 'text-amber-800', small: 'text-amber-700' };
+      return { card: 'bg-[#f8fafc] border-slate-200', text: 'text-slate-900', label: 'text-slate-500', small: 'text-slate-500' };
+    }
+    if (type === 'rice') {
+      if (riceStockBags < 100) return { card: 'bg-[#fef2f2] border-red-200', text: 'text-red-955', label: 'text-red-800', small: 'text-red-750' };
+      if (riceStockBags < 300) return { card: 'bg-[#fffbeb] border-amber-200', text: 'text-amber-955', label: 'text-amber-800', small: 'text-amber-700' };
+      return { card: 'bg-[#f8fafc] border-slate-200', text: 'text-slate-900', label: 'text-slate-500', small: 'text-slate-500' };
+    }
+    if (type === 'profit') {
+      if (grossProfitVal < 0) return { card: 'bg-[#fef2f2] border-red-200', text: 'text-red-955', label: 'text-red-800', small: 'text-red-700' };
+      if (grossProfitVal === 0) return { card: 'bg-[#f8fafc] border-slate-200', text: 'text-slate-900', label: 'text-slate-500', small: 'text-slate-500' };
+      return { card: 'bg-[#f0fdf4] border-emerald-200', text: 'text-emerald-950', label: 'text-emerald-800', small: 'text-emerald-700' };
+    }
+    // balance
+    if (pendingAmt > 300000) return { card: 'bg-[#fef2f2] border-red-200', text: 'text-red-955', label: 'text-red-800', small: 'text-red-700' };
+    if (pendingAmt > 0) return { card: 'bg-[#fffbeb] border-amber-200', text: 'text-amber-955', label: 'text-amber-800', small: 'text-amber-700' };
+    return { card: 'bg-[#f8fafc] border-slate-200', text: 'text-slate-900', label: 'text-slate-500', small: 'text-slate-500' };
+  };
+
   return (
     <div className="space-y-6">
       
       {/* Primary KPI Indicators Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Current Paddy Stock */}
-        <div className="p-5 bg-[#f0fdf4] border border-emerald-200 rounded-2xl shadow-xs">
-          <span className="text-[10px] text-emerald-800 uppercase font-black tracking-wider block">{t('Current Paddy Stock')}</span>
-          <b className="block text-2xl text-emerald-955 font-black mt-1.5">
-            {Math.round(paddyStockBags).toLocaleString('en-IN')}
-          </b>
-          <small className="block text-[11px] text-emerald-700 mt-1.5 font-medium">{t('available bags in silos/godowns')}</small>
-        </div>
+        {(() => {
+          const s = getCardStyle('paddy');
+          return (
+            <div className={`p-5 border rounded-2xl shadow-xs ${s.card}`}>
+              <span className={`text-[10px] uppercase font-black tracking-wider block ${s.label}`}>{t('Current Paddy Stock')}</span>
+              <b className={`block text-2xl font-black mt-1.5 ${s.text}`}>
+                {Math.round(paddyStockBags).toLocaleString('en-IN')}
+              </b>
+              <small className={`block text-[11px] mt-1.5 font-medium ${s.small}`}>{t('available bags in silos/godowns')}</small>
+            </div>
+          );
+        })()}
         {/* Current Rice Stock */}
-        <div className="p-5 bg-[#ecfdf5] border border-teal-200 rounded-2xl shadow-xs">
-          <span className="text-[10px] text-teal-800 uppercase font-black tracking-wider block">{t('Current Rice Stock')}</span>
-          <b className="block text-2xl text-teal-955 font-black mt-1.5">
-            {Math.round(riceStockBags).toLocaleString('en-IN')}
-          </b>
-          <small className="block text-[11px] text-teal-700 mt-1.5 font-medium">{t('available processed bags')}</small>
-        </div>
+        {(() => {
+          const s = getCardStyle('rice');
+          return (
+            <div className={`p-5 border rounded-2xl shadow-xs ${s.card}`}>
+              <span className={`text-[10px] uppercase font-black tracking-wider block ${s.label}`}>{t('Current Rice Stock')}</span>
+              <b className={`block text-2xl font-black mt-1.5 ${s.text}`}>
+                {Math.round(riceStockBags).toLocaleString('en-IN')}
+              </b>
+              <small className={`block text-[11px] mt-1.5 font-medium ${s.small}`}>{t('available processed bags')}</small>
+            </div>
+          );
+        })()}
         {/* Est. Gross Profit */}
-        <div className={`p-5 rounded-2xl border shadow-xs ${grossProfitVal >= 0 ? 'bg-[#f0fdf4] border-emerald-200' : 'bg-[#fef2f2] border-red-200'}`}>
-          <span className={`text-[10px] uppercase font-black tracking-wider block ${grossProfitVal >= 0 ? 'text-emerald-800' : 'text-red-800'}`}>{t('Est. Gross Profit (Milling)')}</span>
-          <b className={`block text-2xl font-black mt-1.5 ${grossProfitVal >= 0 ? 'text-emerald-955' : 'text-red-955'}`}>
-            {money(grossProfitVal)}
-          </b>
-          <small className={`block text-[11px] mt-1.5 font-medium ${grossProfitVal >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>{t('derived from market selling averages')}</small>
-        </div>
+        {(() => {
+          const s = getCardStyle('profit');
+          return (
+            <div className={`p-5 border rounded-2xl shadow-xs ${s.card}`}>
+              <span className={`text-[10px] uppercase font-black tracking-wider block ${s.label}`}>{t('Est. Gross Profit (Milling)')}</span>
+              <b className={`block text-2xl font-black mt-1.5 ${s.text}`}>
+                {money(grossProfitVal)}
+              </b>
+              <small className={`block text-[11px] mt-1.5 font-medium ${s.small}`}>{t('derived from market selling averages')}</small>
+            </div>
+          );
+        })()}
         {/* Pending Supplier Balance */}
-        <div className="p-5 bg-[#fffbeb] border border-amber-200 rounded-2xl shadow-xs">
-          <span className="text-[10px] text-amber-800 uppercase font-black tracking-wider block">{t('Pending Supplier Balance')}</span>
-          <b className="block text-2xl text-amber-955 font-black mt-1.5">{money(pendingAmt)}</b>
-          <small className="block text-[11px] text-amber-700 mt-1.5 font-medium">
-            {pendingPurchases.length} {t('accounts outstanding')}
-          </small>
-        </div>
+        {(() => {
+          const s = getCardStyle('balance');
+          return (
+            <div className={`p-5 border rounded-2xl shadow-xs ${s.card}`}>
+              <span className={`text-[10px] uppercase font-black tracking-wider block ${s.label}`}>{t('Pending Supplier Balance')}</span>
+              <b className={`block text-2xl font-black mt-1.5 ${s.text}`}>{money(pendingAmt)}</b>
+              <small className={`block text-[11px] mt-1.5 font-medium ${s.small}`}>
+                {pendingPurchases.length} {t('accounts outstanding')}
+              </small>
+            </div>
+          );
+        })()}
       </div>
 
       {/* Secondary Compact KPI Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         {/* Today Purchase */}
-        <div className="py-3 px-4 bg-[#f8fafc] border border-slate-205 rounded-xl flex items-center justify-between shadow-2xs">
+        <div className="py-3 px-4 bg-[#f8fafc] border border-slate-200 rounded-xl flex items-center justify-between shadow-2xs">
           <div>
             <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">{t('Today Purchase')}</span>
             <b className="block text-lg text-slate-800 font-extrabold mt-0.5">{money(todayPurchaseValue)}</b>
@@ -411,7 +453,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </span>
         </div>
         {/* Shipped Deliveries Today */}
-        <div className="py-3 px-4 bg-[#f8fafc] border border-slate-205 rounded-xl flex items-center justify-between shadow-2xs">
+        <div className="py-3 px-4 bg-[#f8fafc] border border-slate-200 rounded-xl flex items-center justify-between shadow-2xs">
           <div>
             <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">{t('Shipped Deliveries Today')}</span>
             <b className="block text-lg text-slate-800 font-extrabold mt-0.5">
@@ -450,12 +492,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="space-y-6 flex flex-col">
           {renderYieldPerformanceChart()}
           
-          <div className="bg-emerald-900 text-white rounded-2xl p-6 shadow-md shadow-emerald-100/40 flex-1 flex flex-col justify-center min-h-[160px]">
-            <span className="bg-emerald-600 text-white text-[10px] px-2.5 py-1 rounded-full font-black uppercase tracking-wider w-fit">
+          <div className="bg-slate-800 text-white rounded-2xl p-6 shadow-md shadow-slate-200/40 flex-1 flex flex-col justify-center min-h-[160px] border border-slate-700/50">
+            <span className="bg-slate-700 text-slate-100 text-[10px] px-2.5 py-1 rounded-full font-black uppercase tracking-wider w-fit border border-slate-600/60">
               {t("Strategic Operations Summary")}
             </span>
             <p 
-              className="text-sm leading-relaxed text-slate-100 mt-4 font-semibold"
+              className="text-sm leading-relaxed text-slate-200 mt-4 font-semibold"
               dangerouslySetInnerHTML={{ 
                 __html: language === 'ta' 
                   ? `ஆலையின் தற்போதைய நிலவரப்படி, முக்கிய நெல் ரகங்கள் கொள்முதல் மற்றும் உற்பத்தி சுழற்சி சீராக உள்ளது. நெல் இருப்பு ${Math.round(paddyStockBags)} மூட்டைகளும், அரிசி இருப்பு ${Math.round(riceStockBags)} மூட்டைகளும் உள்ளன. விவசாயிகளுக்கு செலுத்த வேண்டிய நிலுவைத்தொகை ${money(pendingAmt)} ஆகும்.`
