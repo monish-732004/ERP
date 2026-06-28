@@ -350,133 +350,112 @@ export const Dashboard: React.FC<DashboardProps> = ({
   return (
     <div className="space-y-6">
       
-      {/* KPI Indicators grid */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-4 md:p-6 shadow-sm">
-        <div className="flex flex-col sm:flex-row justify-between sm:items-center border-b border-slate-100 pb-3 mb-6 gap-2">
-          <h2 className="font-sans font-bold text-base md:text-lg text-slate-800">{t('Operational Command Center')}</h2>
-          <span className="text-xs font-semibold text-slate-400">{t('Date')}: {fmtDate(dateToday)}</span>
+      {/* Primary KPI Indicators Row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Current Paddy Stock */}
+        <div className="p-5 bg-[#f0fdf4] border border-emerald-200 rounded-2xl shadow-xs">
+          <span className="text-[10px] text-emerald-800 uppercase font-black tracking-wider block">{t('Current Paddy Stock')}</span>
+          <b className="block text-2xl text-emerald-955 font-black mt-1.5">
+            {Math.round(paddyStockBags).toLocaleString('en-IN')}
+          </b>
+          <small className="block text-[11px] text-emerald-700 mt-1.5 font-medium">{t('available bags in silos/godowns')}</small>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          <div className="p-4 bg-[#f8fafc] border border-slate-200 rounded-xl shadow-2xs">
-            <span className="text-[10px] text-slate-500 uppercase font-extrabold tracking-wider block">{t('Today Purchase')}</span>
-            <b className="block text-xl text-slate-800 font-black mt-1">{money(todayPurchaseValue)}</b>
-            <small className="block text-[11px] text-slate-500 mt-1">
-              {todaysPurchases.length} {t('loads')} · {(todayPurchaseNet/1000).toFixed(1)} MT
-            </small>
-          </div>
-          <div className="p-4 bg-[#fafaf9] border border-stone-200 rounded-xl shadow-2xs">
-            <span className="text-[10px] text-stone-500 uppercase font-extrabold tracking-wider block">{t('Today Processed')}</span>
-            <b className="block text-xl text-stone-800 font-black mt-1">
-              {todayProdBags ? `${Math.round(todayProdBags)} ${t('bags')}` : `0 ${t('bags')}`}
-            </b>
-            <small className="block text-[11px] text-stone-500 mt-1">
-              {todaysProduction.length} {t('parboiled batches')}
-            </small>
-          </div>
-          <div className="p-4 bg-[#f0fdf4] border border-emerald-200 rounded-xl shadow-2xs">
-            <span className="text-[10px] text-emerald-800 uppercase font-extrabold tracking-wider block">{t('Current Paddy Stock')}</span>
-            <b className="block text-xl text-emerald-950 font-black mt-1">
-              {Math.round(paddyStockBags).toLocaleString('en-IN')}
-            </b>
-            <small className="block text-[11px] text-emerald-700 mt-1">{t('available bags in silos/godowns')}</small>
-          </div>
-          <div className="p-4 bg-[#ecfdf5] border border-teal-200 rounded-xl shadow-2xs">
-            <span className="text-[10px] text-teal-800 uppercase font-extrabold tracking-wider block">{t('Current Rice Stock')}</span>
-            <b className="block text-xl text-teal-950 font-black mt-1">
-              {Math.round(riceStockBags).toLocaleString('en-IN')}
-            </b>
-            <small className="block text-[11px] text-teal-700 mt-1">{t('available processed bags')}</small>
-          </div>
-          <div className="p-4 bg-[#fffbeb] border border-amber-200 rounded-xl shadow-2xs">
-            <span className="text-[10px] text-amber-800 uppercase font-extrabold tracking-wider block">{t('Pending Supplier Balance')}</span>
-            <b className="block text-xl text-amber-950 font-black mt-1">{money(pendingAmt)}</b>
-            <small className="block text-[11px] text-amber-700 mt-1">
-              {pendingPurchases.length} {t('accounts outstanding')}
-            </small>
-          </div>
-          <div className="p-4 bg-[#f8fafc] border border-slate-200 rounded-xl shadow-2xs">
-            <span className="text-[10px] text-slate-500 uppercase font-extrabold tracking-wider block">{t('Shipped Deliveries Today')}</span>
-            <b className="block text-xl text-slate-800 font-black mt-1">
-              {loadingBags ? `${Math.round(loadingBags)} ${t('bags')}` : `0 ${t('bags')}`}
-            </b>
-            <small className="block text-[11px] text-slate-500 mt-1">{todaysLoading.length} {t('vehicle loading logs')}</small>
-          </div>
-          <div className="p-4 bg-[#f5f5f4] border border-stone-200 rounded-xl shadow-2xs">
-            <span className="text-[10px] text-stone-500 uppercase font-extrabold tracking-wider block">{t('Highest Volume Supplier')}</span>
-            <b className="block text-sm text-stone-800 font-extrabold truncate mt-2">
-              {bestSupplier ? bestSupplier.name : '-'}
-            </b>
-            <small className="block text-[11px] text-stone-500 mt-1">
-              {bestSupplier ? `${(bestSupplier.net/1000).toFixed(0)} ${t('Tons supplied')}` : t('Need purchase data')}
-            </small>
-          </div>
-          <div className={`p-4 rounded-xl border shadow-2xs ${grossProfitVal >= 0 ? 'bg-[#f0fdf4] border-emerald-200' : 'bg-[#fef2f2] border-red-200'}`}>
-            <span className={`text-[10px] uppercase font-extrabold tracking-wider block ${grossProfitVal >= 0 ? 'text-emerald-800' : 'text-red-800'}`}>{t('Est. Gross Profit (Milling)')}</span>
-            <b className={`block text-xl font-black mt-1 ${grossProfitVal >= 0 ? 'text-emerald-950' : 'text-red-950'}`}>
-              {money(grossProfitVal)}
-            </b>
-            <small className={`block text-[11px] mt-1 ${grossProfitVal >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>{t('derived from market selling averages')}</small>
-          </div>
+        {/* Current Rice Stock */}
+        <div className="p-5 bg-[#ecfdf5] border border-teal-200 rounded-2xl shadow-xs">
+          <span className="text-[10px] text-teal-800 uppercase font-black tracking-wider block">{t('Current Rice Stock')}</span>
+          <b className="block text-2xl text-teal-955 font-black mt-1.5">
+            {Math.round(riceStockBags).toLocaleString('en-IN')}
+          </b>
+          <small className="block text-[11px] text-teal-700 mt-1.5 font-medium">{t('available processed bags')}</small>
+        </div>
+        {/* Est. Gross Profit */}
+        <div className={`p-5 rounded-2xl border shadow-xs ${grossProfitVal >= 0 ? 'bg-[#f0fdf4] border-emerald-200' : 'bg-[#fef2f2] border-red-200'}`}>
+          <span className={`text-[10px] uppercase font-black tracking-wider block ${grossProfitVal >= 0 ? 'text-emerald-800' : 'text-red-800'}`}>{t('Est. Gross Profit (Milling)')}</span>
+          <b className={`block text-2xl font-black mt-1.5 ${grossProfitVal >= 0 ? 'text-emerald-955' : 'text-red-955'}`}>
+            {money(grossProfitVal)}
+          </b>
+          <small className={`block text-[11px] mt-1.5 font-medium ${grossProfitVal >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>{t('derived from market selling averages')}</small>
+        </div>
+        {/* Pending Supplier Balance */}
+        <div className="p-5 bg-[#fffbeb] border border-amber-200 rounded-2xl shadow-xs">
+          <span className="text-[10px] text-amber-800 uppercase font-black tracking-wider block">{t('Pending Supplier Balance')}</span>
+          <b className="block text-2xl text-amber-955 font-black mt-1.5">{money(pendingAmt)}</b>
+          <small className="block text-[11px] text-amber-700 mt-1.5 font-medium">
+            {pendingPurchases.length} {t('accounts outstanding')}
+          </small>
         </div>
       </div>
 
-      {/* SVG charts, low stock alerts list, and strategic notes */}
+      {/* Secondary Compact KPI Row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        {/* Today Purchase */}
+        <div className="py-3 px-4 bg-[#f8fafc] border border-slate-205 rounded-xl flex items-center justify-between shadow-2xs">
+          <div>
+            <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">{t('Today Purchase')}</span>
+            <b className="block text-lg text-slate-800 font-extrabold mt-0.5">{money(todayPurchaseValue)}</b>
+          </div>
+          <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-bold">
+            {todaysPurchases.length} L
+          </span>
+        </div>
+        {/* Today Processed */}
+        <div className="py-3 px-4 bg-[#fafaf9] border border-stone-200 rounded-xl flex items-center justify-between shadow-2xs">
+          <div>
+            <span className="text-[10px] text-stone-500 uppercase font-bold tracking-wider block">{t('Today Processed')}</span>
+            <b className="block text-lg text-stone-800 font-extrabold mt-0.5">
+              {todayProdBags ? `${Math.round(todayProdBags)} bags` : `0 bags`}
+            </b>
+          </div>
+          <span className="text-[10px] bg-stone-100/80 text-stone-600 px-2 py-0.5 rounded font-bold">
+            {todaysProduction.length} B
+          </span>
+        </div>
+        {/* Shipped Deliveries Today */}
+        <div className="py-3 px-4 bg-[#f8fafc] border border-slate-205 rounded-xl flex items-center justify-between shadow-2xs">
+          <div>
+            <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">{t('Shipped Deliveries Today')}</span>
+            <b className="block text-lg text-slate-800 font-extrabold mt-0.5">
+              {loadingBags ? `${Math.round(loadingBags)} bags` : `0 bags`}
+            </b>
+          </div>
+          <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-bold">
+            {todaysLoading.length} V
+          </span>
+        </div>
+        {/* Highest Volume Supplier */}
+        <div className="py-3 px-4 bg-[#f5f5f4] border border-stone-200 rounded-xl flex items-center justify-between shadow-2xs">
+          <div className="overflow-hidden mr-1">
+            <span className="text-[10px] text-stone-500 uppercase font-bold tracking-wider block">{t('Top Supplier')}</span>
+            <b className="block text-xs text-stone-800 font-black truncate mt-0.5" title={bestSupplier ? bestSupplier.name : '-'}>
+              {bestSupplier ? bestSupplier.name : '-'}
+            </b>
+          </div>
+          {bestSupplier && (
+            <span className="text-[9px] bg-stone-200/60 text-stone-700 px-1.5 py-0.5 rounded font-bold shrink-0">
+              {(bestSupplier.net/1000).toFixed(0)}T
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Main Charts & Strategic Summary Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
-        {/* Custom drawn charts */}
+        {/* Left Column - Stocks and Procurement Trends */}
         <div className="space-y-6">
           {renderGroupedStockChart()}
           {renderProcurementTrendChart()}
         </div>
 
-        {/* Alerts & warnings list & Yield Chart */}
-        <div className="flex flex-col gap-6">
+        {/* Right Column - Yield Chart & Strategic Summary Card */}
+        <div className="space-y-6 flex flex-col">
           {renderYieldPerformanceChart()}
           
-          <div className="bg-white rounded-2xl border border-slate-200 p-4 md:p-6 shadow-sm flex-1">
-            <h3 className="font-sans font-bold text-base text-slate-800 border-b border-slate-50 pb-2 mb-4">
-              {t("Live Stock & Payable Warnings")}
-            </h3>
-            <div className="space-y-2">
-              {alerts.length === 0 ? (
-                <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl font-bold text-xs">
-                  {t("Stock balances and payables are in safe thresholds.")}
-                </div>
-              ) : (
-                alerts.map((a, idx) => {
-                  // Translate key low-stock alarm phrases
-                  let text = String(a).replace(/[\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDC00-\uDFFF]/g, '');
-                  if (language === 'ta') {
-                    if (text.includes("Paddy stock is critically low")) {
-                      text = `நெல் இருப்பு மிகவும் குறைவாக உள்ளது: தற்பொழுது ${Math.round(paddyStockBags)} மூட்டைகள் மட்டுமே உள்ளன (ஒரு தொகுதிக்கு குறைந்தபட்சம் 600 மூட்டைகள் தேவை).`;
-                    } else if (text.includes("Rice stock in loading bays is low")) {
-                      text = `அரிசி இருப்பு குறைவாக உள்ளது: ${Math.round(riceStockBags)} மூட்டைகள் மட்டுமே இருப்பு உள்ளன.`;
-                    } else if (text.includes("Supplier liabilities exceed limit")) {
-                      text = `விவசாயிகள் நிலுவை வரம்பு தாண்டியுள்ளது: செலுத்த வேண்டிய தொகை ${money(pendingAmt)}.`;
-                    } else if (text.includes("No purchase invoices have been recorded")) {
-                      text = `இன்று இதுவரை கொள்முதல் பில்கள் எதுவும் பதிவு செய்யப்படவில்லை.`;
-                    }
-                  }
-                  return (
-                    <div 
-                      key={idx} 
-                      className="p-3 bg-slate-50 border border-slate-100 text-slate-700 font-bold rounded-xl text-xs leading-relaxed"
-                    >
-                      {text}
-                    </div>
-                  );
-                })
-              )}
-            </div>
-          </div>
-
-          <div className="bg-emerald-900 text-white rounded-2xl p-4 md:p-6 shadow-md shadow-emerald-100/50 flex flex-col justify-center">
+          <div className="bg-emerald-900 text-white rounded-2xl p-6 shadow-md shadow-emerald-100/40 flex-1 flex flex-col justify-center min-h-[160px]">
             <span className="bg-emerald-600 text-white text-[10px] px-2.5 py-1 rounded-full font-black uppercase tracking-wider w-fit">
               {t("Strategic Operations Summary")}
             </span>
             <p 
-              className="text-sm leading-relaxed text-slate-100 mt-3 font-semibold"
+              className="text-sm leading-relaxed text-slate-100 mt-4 font-semibold"
               dangerouslySetInnerHTML={{ 
                 __html: language === 'ta' 
                   ? `ஆலையின் தற்போதைய நிலவரப்படி, முக்கிய நெல் ரகங்கள் கொள்முதல் மற்றும் உற்பத்தி சுழற்சி சீராக உள்ளது. நெல் இருப்பு ${Math.round(paddyStockBags)} மூட்டைகளும், அரிசி இருப்பு ${Math.round(riceStockBags)} மூட்டைகளும் உள்ளன. விவசாயிகளுக்கு செலுத்த வேண்டிய நிலுவைத்தொகை ${money(pendingAmt)} ஆகும்.`
@@ -485,7 +464,44 @@ export const Dashboard: React.FC<DashboardProps> = ({
             />
           </div>
         </div>
+      </div>
 
+      {/* Full Width Live Stock & Payable Warnings (Bottom) */}
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
+        <h3 className="font-sans font-bold text-base text-slate-800 border-b border-slate-100 pb-2.5 mb-4">
+          {t("Live Stock & Payable Warnings")}
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {alerts.length === 0 ? (
+            <div className="col-span-2 p-3 bg-emerald-50 text-emerald-800 rounded-xl font-bold text-xs">
+              {t("Stock balances and payables are in safe thresholds.")}
+            </div>
+          ) : (
+            alerts.map((a, idx) => {
+              // Translate key low-stock alarm phrases
+              let text = String(a).replace(/[\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDC00-\uDFFF]/g, '');
+              if (language === 'ta') {
+                if (text.includes("Paddy stock is critically low")) {
+                  text = `நெல் இருப்பு மிகவும் குறைவாக உள்ளது: தற்பொழுது ${Math.round(paddyStockBags)} மூட்டைகள் மட்டுமே உள்ளன (ஒரு தொகுதிக்கு குறைந்தபட்சம் 600 மூட்டைகள் தேவை).`;
+                } else if (text.includes("Rice stock in loading bays is low")) {
+                  text = `அரிசி இருப்பு குறைவாக உள்ளது: ${Math.round(riceStockBags)} மூட்டைகள் மட்டுமே இருப்பு உள்ளன.`;
+                } else if (text.includes("Supplier liabilities exceed limit")) {
+                  text = `விவசாயிகள் நிலுவை வரம்பு தாண்டியுள்ளது: செலுத்த வேண்டிய தொகை ${money(pendingAmt)}.`;
+                } else if (text.includes("No purchase invoices have been recorded")) {
+                  text = `இன்று இதுவரை கொள்முதல் பில்கள் எதுவும் பதிவு செய்யப்படவில்லை.`;
+                }
+              }
+              return (
+                <div 
+                  key={idx} 
+                  className="p-3 bg-slate-50 border border-slate-100 text-slate-700 font-semibold rounded-xl text-xs leading-relaxed"
+                >
+                  {text}
+                </div>
+              );
+            })
+          )}
+        </div>
       </div>
 
     </div>
