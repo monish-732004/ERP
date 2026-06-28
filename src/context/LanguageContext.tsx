@@ -209,13 +209,13 @@ const translationDictionary: Record<string, string> = {
   'Mark Half-Day': 'அரை நாள் வருகை',
 
   // Voice and Insights
-  'AI Voice-Activated Executive Insights Desk': 'செயற்கை நுண்ணறிவு குரல்வழி செயல்பாட்டு நுண்ணறிவு பிரிவு',
+  'Voice-Activated Executive Insights Desk': 'குரல்வழி செயல்பாட்டு நுண்ணறிவு பிரிவு',
   'Type or click Microphone to ask executive queries:': 'இயக்குநரின் கேள்விகளைக் கேட்க தட்டச்சு செய்யவும் அல்லது மைக்ரோஃபோனைக் கிளிக் செய்யவும்:',
   'Try asking: "What is the available stock of RNR variety?" or "Show total purchases this month."': 'கேட்டுப் பாருங்கள்: "RNR ரகத்தின் தற்போதைய இருப்பு எவ்வளவு?" அல்லது "இந்த மாத கொள்முதல் மதிப்பை காட்டு."',
   'Speak Now': 'பேசவும்',
   'Listening...': 'கேட்கிறது...',
   'Processing voice command...': 'குரல் கட்டளை செயலாக்கப்படுகிறது...',
-  'AI Insights Desk': 'செயற்கை நுண்ணறிவு உதவிப் பிரிவு',
+  'Insights Desk': 'செயல்பாட்டு நுண்ணறிவு உதவிப் பிரிவு',
   'Interactive Voice Assistant': 'ஊடாடும் குரல் உதவியாளர்',
   'Send Query': 'கேள்வியை அனுப்பு',
   'Enter query...': 'கேள்வியைத் தட்டச்சு செய்க...',

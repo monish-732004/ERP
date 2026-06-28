@@ -48,13 +48,13 @@ export const VoiceAndInsights: React.FC<VoiceAndInsightsProps> = ({
     return d ? JSON.parse(d) : [];
   });
 
-  // AI Q&A States
-  const [aiQuestion, setAiQuestion] = useState('');
-  const [aiAnswerTitle, setAiAnswerTitle] = useState('Ready');
-  const [aiAnswerBody, setAiAnswerBody] = useState('Try: "Who is the best supplier?" or click one of the quick buttons below.');
-  const [aiTableHeads, setAiTableHeads] = useState<string[]>([]);
-  const [aiTableRows, setAiTableRows] = useState<any[][]>([]);
-  const [aiSuggestion, setAiSuggestion] = useState('');
+  // Q&A States
+  const [insightQuestion, setInsightQuestion] = useState('');
+  const [insightAnswerTitle, setInsightAnswerTitle] = useState('Ready');
+  const [insightAnswerBody, setInsightAnswerBody] = useState('Try: "Who is the best supplier?" or click one of the quick buttons below.');
+  const [insightTableHeads, setInsightTableHeads] = useState<string[]>([]);
+  const [insightTableRows, setInsightTableRows] = useState<any[][]>([]);
+  const [insightSuggestion, setInsightSuggestion] = useState('');
 
   const money = (n: number) => '₹' + Math.round(n).toLocaleString('en-IN');
 
@@ -229,15 +229,15 @@ Please verify. Thank you!`;
     });
   };
 
-  // AI Insights Rule Engine
-  const askAIInsight = (queryStr?: string) => {
-    const q = (queryStr || aiQuestion || '').toLowerCase().trim();
+  // Insights Rule Engine
+  const askInsight = (queryStr?: string) => {
+    const q = (queryStr || insightQuestion || '').toLowerCase().trim();
     if (!q) {
-      setAiAnswerTitle('Ready');
-      setAiAnswerBody('Please select a question or type a query.');
-      setAiTableHeads([]);
-      setAiTableRows([]);
-      setAiSuggestion('');
+      setInsightAnswerTitle('Ready');
+      setInsightAnswerBody('Please select a question or type a query.');
+      setInsightTableHeads([]);
+      setInsightTableRows([]);
+      setInsightSuggestion('');
       return;
     }
 
@@ -251,11 +251,11 @@ Please verify. Thank you!`;
       const net = todayList.reduce((sum, x) => sum + (x.net || 0), 0);
       const bagsCount = todayList.reduce((sum, x) => sum + (x.full || 0), 0);
 
-      setAiAnswerTitle("Today's Paddy Purchases Summary");
-      setAiAnswerBody(`Today (${t}), you recorded <b>${todayList.length}</b> purchase loads, totaling <b>${bagsCount}</b> bags (<b>${net.toFixed(1)} kg</b>) with a combined value of <b>${money(total)}</b>.`);
-      setAiTableHeads(['Bill No', 'Supplier / Party', 'Variety', 'Vehicle', 'Bags', 'Amount']);
-      setAiTableRows(todayList.map(x => [x.billNo, x.party, x.variety, x.lorryList || x.lorry || '-', x.full, money(x.total)]));
-      setAiSuggestion(todayList.length ? "Ensure payments are scheduled for partial/pending bills before day close." : "No purchases recorded yet today.");
+      setInsightAnswerTitle("Today's Paddy Purchases Summary");
+      setInsightAnswerBody(`Today (${t}), you recorded <b>${todayList.length}</b> purchase loads, totaling <b>${bagsCount}</b> bags (<b>${net.toFixed(1)} kg</b>) with a combined value of <b>${money(total)}</b>.`);
+      setInsightTableHeads(['Bill No', 'Supplier / Party', 'Variety', 'Vehicle', 'Bags', 'Amount']);
+      setInsightTableRows(todayList.map(x => [x.billNo, x.party, x.variety, x.lorryList || x.lorry || '-', x.full, money(x.total)]));
+      setInsightSuggestion(todayList.length ? "Ensure payments are scheduled for partial/pending bills before day close." : "No purchases recorded yet today.");
     } 
     else if (q.includes('month') && (q.includes('purchase') || q.includes('paddy'))) {
       const monthList = purchases.filter(x => String(x.date || '').startsWith(m));
@@ -263,8 +263,8 @@ Please verify. Thank you!`;
       const net = monthList.reduce((sum, x) => sum + (x.net || 0), 0);
       const bagsCount = monthList.reduce((sum, x) => sum + (x.full || 0), 0);
 
-      setAiAnswerTitle(`Paddy Purchases for ${m}`);
-      setAiAnswerBody(`This month, you secured <b>${monthList.length}</b> purchase loads, representing <b>${bagsCount}</b> bags (<b>${net.toFixed(0)} kg</b>) valued at <b>${money(total)}</b>.`);
+      setInsightAnswerTitle(`Paddy Purchases for ${m}`);
+      setInsightAnswerBody(`This month, you secured <b>${monthList.length}</b> purchase loads, representing <b>${bagsCount}</b> bags (<b>${net.toFixed(0)} kg</b>) valued at <b>${money(total)}</b>.`);
       
       const supplierSummary: Record<string, { count: number; value: number }> = {};
       monthList.forEach(x => {
@@ -273,9 +273,9 @@ Please verify. Thank you!`;
         supplierSummary[x.party].value += x.total || 0;
       });
 
-      setAiTableHeads(['Supplier Name', 'Total Loads', 'Total Value']);
-      setAiTableRows(Object.entries(supplierSummary).sort((a,b)=>b[1].value - a[1].value).map(x => [x[0], x[1].count, money(x[1].value)]));
-      setAiSuggestion("Murugan Farms and Bala & Co remain your top suppliers this season.");
+      setInsightTableHeads(['Supplier Name', 'Total Loads', 'Total Value']);
+      setInsightTableRows(Object.entries(supplierSummary).sort((a,b)=>b[1].value - a[1].value).map(x => [x[0], x[1].count, money(x[1].value)]));
+      setInsightSuggestion("Murugan Farms and Bala & Co remain your top suppliers this season.");
     }
     else if (q.includes('best') && q.includes('supplier')) {
       const supplierSums: Record<string, { value: number; bags: number; count: number }> = {};
@@ -288,32 +288,32 @@ Please verify. Thank you!`;
 
       const sorted = Object.entries(supplierSums).sort((a,b) => b[1].value - a[1].value);
       if (sorted.length === 0) {
-        setAiAnswerTitle("Best Supplier Analysis");
-        setAiAnswerBody("No purchases found to determine the best supplier.");
+        setInsightAnswerTitle("Best Supplier Analysis");
+        setInsightAnswerBody("No purchases found to determine the best supplier.");
         return;
       }
 
-      setAiAnswerTitle("Best Supplier Analysis (By Total Purchase Value)");
-      setAiAnswerBody(`Your primary supplier is <b>${sorted[0][0]}</b>, contributing <b>${sorted[0][1].count}</b> lots with a total purchase value of <b>${money(sorted[0][1].value)}</b>.`);
-      setAiTableHeads(['Supplier Name', 'Lots Supplied', 'Total Bags', 'Purchase Value']);
-      setAiTableRows(sorted.map(x => [x[0], x[1].count, x[1].bags, money(x[1].value)]));
-      setAiSuggestion(`You can negotiate bulk parboiling discounts with ${sorted[0][0]} due to their dominant supply share.`);
+      setInsightAnswerTitle("Best Supplier Analysis (By Total Purchase Value)");
+      setInsightAnswerBody(`Your primary supplier is <b>${sorted[0][0]}</b>, contributing <b>${sorted[0][1].count}</b> lots with a total purchase value of <b>${money(sorted[0][1].value)}</b>.`);
+      setInsightTableHeads(['Supplier Name', 'Lots Supplied', 'Total Bags', 'Purchase Value']);
+      setInsightTableRows(sorted.map(x => [x[0], x[1].count, x[1].bags, money(x[1].value)]));
+      setInsightSuggestion(`You can negotiate bulk parboiling discounts with ${sorted[0][0]} due to their dominant supply share.`);
     }
     else if (q.includes('pending') || q.includes('balance') || q.includes('payable')) {
       const pendingList = purchases.filter(x => x.balance > 0);
       const totalPending = pendingList.reduce((sum, x) => sum + x.balance, 0);
 
-      setAiAnswerTitle("Outstanding Supplier Payables");
-      setAiAnswerBody(`There are currently <b>${pendingList.length}</b> outstanding bills to pay, totaling <b>${money(totalPending)}</b>.`);
+      setInsightAnswerTitle("Outstanding Supplier Payables");
+      setInsightAnswerBody(`There are currently <b>${pendingList.length}</b> outstanding bills to pay, totaling <b>${money(totalPending)}</b>.`);
       
       const supMap: Record<string, number> = {};
       pendingList.forEach(x => {
         supMap[x.party] = (supMap[x.party] || 0) + x.balance;
       });
 
-      setAiTableHeads(['Supplier Name', 'Oustanding Balance']);
-      setAiTableRows(Object.entries(supMap).sort((a,b)=>b[1]-a[1]).map(x=>[x[0], money(x[1])]));
-      setAiSuggestion("Consider clearing balances for smaller suppliers to minimize total outstanding accounts.");
+      setInsightTableHeads(['Supplier Name', 'Oustanding Balance']);
+      setInsightTableRows(Object.entries(supMap).sort((a,b)=>b[1]-a[1]).map(x=>[x[0], money(x[1])]));
+      setInsightSuggestion("Consider clearing balances for smaller suppliers to minimize total outstanding accounts.");
     }
     else if (q.includes('variety') && (q.includes('purchase') || q.includes('paddy'))) {
       const varMap: Record<string, { count: number; bags: number; value: number }> = {};
@@ -324,31 +324,31 @@ Please verify. Thank you!`;
         varMap[x.variety].value += x.total || 0;
       });
 
-      setAiAnswerTitle("Variety-wise Paddy Purchases");
-      setAiAnswerBody("Breakdown of paddy purchased by variety:");
-      setAiTableHeads(['Variety', 'Loads', 'Total Bags', 'Purchase Value']);
-      setAiTableRows(Object.entries(varMap).sort((a,b)=>b[1].bags - a[1].bags).map(x=>[x[0], x[1].count, x[1].bags, money(x[1].value)]));
-      setAiSuggestion("RNR remains your highest volume variety, aligning with bulk market consumer demand.");
+      setInsightAnswerTitle("Variety-wise Paddy Purchases");
+      setInsightAnswerBody("Breakdown of paddy purchased by variety:");
+      setInsightTableHeads(['Variety', 'Loads', 'Total Bags', 'Purchase Value']);
+      setInsightTableRows(Object.entries(varMap).sort((a,b)=>b[1].bags - a[1].bags).map(x=>[x[0], x[1].count, x[1].bags, money(x[1].value)]));
+      setInsightSuggestion("RNR remains your highest volume variety, aligning with bulk market consumer demand.");
     }
     else if (q.includes('absent')) {
       const absents = attendance.filter(x => x.date === t && x.status === 'Absent');
 
-      setAiAnswerTitle("Absent Employees Today");
-      setAiAnswerBody(`Today (${t}), you have <b>${absents.length}</b> employee(s) absent.`);
-      setAiTableHeads(['Absent Employee Name', 'Phone Number', 'Salary Type']);
-      setAiTableRows(absents.map(x => {
+      setInsightAnswerTitle("Absent Employees Today");
+      setInsightAnswerBody(`Today (${t}), you have <b>${absents.length}</b> employee(s) absent.`);
+      setInsightTableHeads(['Absent Employee Name', 'Phone Number', 'Salary Type']);
+      setInsightTableRows(absents.map(x => {
         const emp = employees.find(e => e.name === x.employee);
         return [x.employee, emp?.phone || '-', emp?.salaryType || '-'];
       }));
-      setAiSuggestion(absents.length ? "You may need to reorganize shift allocations to maintain parboiling yard throughput." : "Excellent! All workers are present today.");
+      setInsightSuggestion(absents.length ? "You may need to reorganize shift allocations to maintain parboiling yard throughput." : "Excellent! All workers are present today.");
     }
     else if (q.includes('yield') || q.includes('production')) {
       const completed = productions.filter(p => p.status === 'Completed');
       
-      setAiAnswerTitle("Production Batch Yield Performance");
-      setAiAnswerBody("Performance list of completed parboiling milling batches:");
-      setAiTableHeads(['Date Finished', 'Batch No', 'Variety', 'Paddy Input (Bags)', 'Rice Output (Bags)', 'Yield %']);
-      setAiTableRows(completed.map(x => [
+      setInsightAnswerTitle("Production Batch Yield Performance");
+      setInsightAnswerBody("Performance list of completed parboiling milling batches:");
+      setInsightTableHeads(['Date Finished', 'Batch No', 'Variety', 'Paddy Input (Bags)', 'Rice Output (Bags)', 'Yield %']);
+      setInsightTableRows(completed.map(x => [
         x.completionDate || x.date,
         x.batchNo,
         x.variety,
@@ -356,22 +356,22 @@ Please verify. Thank you!`;
         x.totalRice,
         x.yieldPercent.toFixed(2) + '%'
       ]));
-      setAiSuggestion("Any yield above 78% is excellent. Try to identify which supplier lots yield higher results.");
+      setInsightSuggestion("Any yield above 78% is excellent. Try to identify which supplier lots yield higher results.");
     }
     else {
       // Default / fallback search on paddy entries
       const matches = entries.filter(e => e.party.toLowerCase().includes(q) || e.variety.toLowerCase().includes(q));
-      setAiAnswerTitle(`Search Results for "${q}"`);
-      setAiAnswerBody(`Found <b>${matches.length}</b> matches in paddy entry logs:`);
-      setAiTableHeads(['Date', 'Party', 'Lorry', 'Bags', 'Variety', 'Destination']);
-      setAiTableRows(matches.map(x => [x.date, x.party, x.lorry, x.bags, x.variety, x.destination]));
-      setAiSuggestion("Filter search term by supplier name or paddy variety for highly accurate reports.");
+      setInsightAnswerTitle(`Search Results for "${q}"`);
+      setInsightAnswerBody(`Found <b>${matches.length}</b> matches in paddy entry logs:`);
+      setInsightTableHeads(['Date', 'Party', 'Lorry', 'Bags', 'Variety', 'Destination']);
+      setInsightTableRows(matches.map(x => [x.date, x.party, x.lorry, x.bags, x.variety, x.destination]));
+      setInsightSuggestion("Filter search term by supplier name or paddy variety for highly accurate reports.");
     }
   };
 
   const handleQuickQuestion = (question: string) => {
-    setAiQuestion(question);
-    askAIInsight(question);
+    setInsightQuestion(question);
+    askInsight(question);
   };
 
   const handleClearDrafts = () => {
@@ -384,7 +384,7 @@ Please verify. Thank you!`;
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       
-      {/* 🎤 AI Voice Sales Assistant */}
+      {/* 🎤 Voice Sales Assistant */}
       <div className="flex flex-col gap-6">
         <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
           <h2 className="font-sans font-bold text-lg text-slate-800 flex items-center gap-2 mb-2">
@@ -612,20 +612,20 @@ Please verify. Thank you!`;
           <div className="flex gap-2">
             <input 
               type="text"
-              value={aiQuestion}
-              onChange={(e) => setAiQuestion(e.target.value)}
+              value={insightQuestion}
+              onChange={(e) => setInsightQuestion(e.target.value)}
               placeholder={t("e.g., who is our best supplier?")}
-              onKeyDown={(e) => e.key === 'Enter' && askAIInsight()}
+              onKeyDown={(e) => e.key === 'Enter' && askInsight()}
               className="flex-1 p-3 border border-slate-200 rounded-xl focus:border-emerald-500 text-sm font-semibold"
             />
             <button 
-              onClick={() => askAIInsight()}
+              onClick={() => askInsight()}
               className="py-3 px-5 rounded-xl bg-emerald-600 text-white font-bold text-sm shadow hover:bg-emerald-700 transition"
             >
               {t("Analyze")}
             </button>
             <button 
-              onClick={() => { setAiQuestion(''); askAIInsight(''); }}
+              onClick={() => { setInsightQuestion(''); askInsight(''); }}
               className="py-3 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 font-semibold text-sm border border-slate-200"
             >
               {t("Reset")}
@@ -660,24 +660,24 @@ Please verify. Thank you!`;
           </div>
         </div>
 
-        {/* AI Answer Card Output */}
+        {/* Answer Card Output */}
         <div className="bg-emerald-50/50 border border-emerald-200 rounded-2xl p-5">
-          <h3 className="font-sans font-bold text-base text-slate-800 mb-2">{t(aiAnswerTitle)}</h3>
-          <p className="text-sm text-slate-700 leading-relaxed mb-4" dangerouslySetInnerHTML={{ __html: t(aiAnswerBody) }} />
+          <h3 className="font-sans font-bold text-base text-slate-800 mb-2">{t(insightAnswerTitle)}</h3>
+          <p className="text-sm text-slate-700 leading-relaxed mb-4" dangerouslySetInnerHTML={{ __html: t(insightAnswerBody) }} />
 
-          {/* AI Result Table */}
-          {aiTableRows.length > 0 && (
+          {/* Result Table */}
+          {insightTableRows.length > 0 && (
             <div className="overflow-x-auto max-h-[280px] border border-emerald-100 rounded-xl mb-4">
               <table className="w-full text-xs text-slate-600 border-collapse bg-white">
                 <thead>
                   <tr className="bg-slate-100 border-b border-slate-200 font-bold text-slate-600 text-center">
-                    {aiTableHeads.map((h, i) => (
+                    {insightTableHeads.map((h, i) => (
                       <th key={i} className="p-2 border-r border-slate-200 last:border-r-0">{t(h)}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {aiTableRows.map((row, rowIdx) => (
+                  {insightTableRows.map((row, rowIdx) => (
                     <tr key={rowIdx} className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50/50">
                       {row.map((cell, cellIdx) => (
                         <td key={cellIdx} className="p-2 border-r border-slate-100 last:border-r-0 font-semibold">{t(cell)}</td>
@@ -689,9 +689,9 @@ Please verify. Thank you!`;
             </div>
           )}
 
-          {aiSuggestion && (
+          {insightSuggestion && (
             <div className="p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-xs font-bold leading-relaxed">
-              {t("Suggestion Note:")} {t(aiSuggestion)}
+              {t("Suggestion Note:")} {t(insightSuggestion)}
             </div>
           )}
         </div>

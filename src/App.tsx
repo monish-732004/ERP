@@ -40,7 +40,7 @@ import {
   Warehouse, 
   ShieldCheck, 
   Users, 
-  Sparkles,
+  Mic,
   Menu,
   X,
   Globe
@@ -52,7 +52,7 @@ export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Navigation Tabs state
-  type TabType = 'dashboard' | 'paddy_entry' | 'paddy_purchase' | 'stock_milling' | 'quality_finance' | 'labor_wages' | 'ai_insights';
+  type TabType = 'dashboard' | 'paddy_entry' | 'paddy_purchase' | 'stock_milling' | 'quality_finance' | 'labor_wages' | 'executive_insights';
   const [activeTab, setActiveTab] = useState<TabType>('dashboard');
 
   // Real-time Clock digital display
@@ -446,7 +446,7 @@ export default function App() {
       case 'stock_milling': return t('Milling Batches & Stock Logs');
       case 'quality_finance': return t('Quality Logs & Finance Ledger');
       case 'labor_wages': return t('Labor Wages & Attendance Tracker');
-      case 'ai_insights': return t('Executive Insights Desk');
+      case 'executive_insights': return t('Executive Insights Desk');
       default: return t('SKP Rice Mill');
     }
   };
@@ -541,10 +541,10 @@ export default function App() {
               </button>
               
               <button 
-                onClick={() => { setActiveTab('ai_insights'); setMobileMenuOpen(false); }}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'ai_insights' ? 'bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-100'}`}
+                onClick={() => { setActiveTab('executive_insights'); setMobileMenuOpen(false); }}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'executive_insights' ? 'bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-100'}`}
               >
-                <Sparkles className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'ai_insights' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
+                <Mic className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'executive_insights' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
                 <span>{t('Voice & Insights')}</span>
               </button>
             </nav>
@@ -631,10 +631,10 @@ export default function App() {
           </button>
           
           <button 
-            onClick={() => setActiveTab('ai_insights')}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'ai_insights' ? 'bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-100'}`}
+            onClick={() => setActiveTab('executive_insights')}
+            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'executive_insights' ? 'bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-100'}`}
           >
-            <Sparkles className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'ai_insights' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
+            <Mic className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'executive_insights' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
             <span>{t('Voice & Insights')}</span>
           </button>
         </nav>
@@ -784,7 +784,7 @@ export default function App() {
             />
           )}
 
-          {activeTab === 'ai_insights' && (
+          {activeTab === 'executive_insights' && (
             <VoiceAndInsights 
               entries={entries} 
               purchases={purchases} 
