@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+  /* Brand Primitives - emerald green theme */
+  --brand-primary: #059669;
+  --brand-primary-hover: #047857;
+  --brand-primary-light: #f0fdf4;
+  
+  /* Neutral Palette - Slate-based equivalent */
+  --neutral-100: #ffffff;
+  --neutral-200: #f8fafc;
+  --neutral-300: #cbd5e1;
+  --neutral-400: #94a3b8;
+  --neutral-500: #475569;
+  --neutral-900: #0f172a;
+
+  /* Intentional States */
+  --state-success: #0b8f62;
+  --state-success-bg: #eefaf5;
+  --state-success-border: #bce8d6;
+  
+  --state-warning: #f39c12;
+  --state-warning-bg: #fff8df;
+  --state-warning-border: #f3d37a;
+  
+  --state-danger: #c0392b;
+  --state-danger-bg: #fff0f0;
+  --state-danger-border: #f0b7b7;
+
+  /* Interactive Focus Ring */
+  --focus-ring: 0 0 0 3px rgba(5, 150, 105, 0.25);
+}
+
+/* Print Isolation Sandbox & Media Controls */
+@media print {
+  /* Suppress UI infrastructure items */
+  body *, 
+  .top, 
+  .nav, 
+  .buttons, 
+  .excel-controls, 
+  .card, 
+  input, 
+  select,
+  button,
+  aside,
+  header,
+  footer {
+    display: none !important;
+  }
+
+  /* Isolate receipt rendering element */
+  #receiptPrintContainer,
+  #receiptPrintContainer * {
+    display: block !important;
+    visibility: visible;
+  }
+
+  #receiptPrintContainer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    max-width: 100mm; /* Target parameter space for POS ticket emitters */
+    font-family: 'Courier New', monospace; /* Monospaced layout control */
+    font-size: 12px;
+    color: #000000;
+    background: #ffffff;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .r-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .r-table th, 
+  .r-table td {
+    border: 1px dashed #000000 !important;
+    padding: 4px !important;
+  }
+}
