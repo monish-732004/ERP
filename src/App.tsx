@@ -464,19 +464,19 @@ export default function App() {
           />
           
           {/* Slide-out Panel */}
-          <aside className="relative w-72 max-w-[85vw] bg-slate-900 flex flex-col h-full z-10 shadow-2xl animate-in slide-in-from-left duration-200">
+          <aside className="relative w-72 max-w-[85vw] bg-[#0c0c0e] border-r border-[#18181c] flex flex-col h-full z-10 shadow-2xl animate-in slide-in-from-left duration-200">
             {/* Close Button */}
             <div className="absolute top-4 right-4">
               <button 
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-white"
+                className="p-2 rounded-lg bg-[#18181b] text-slate-400 hover:text-white border border-[#27272a]/30"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
             
             {/* Mobile Brand Header */}
-            <div className="p-6 flex items-center gap-3 border-b border-slate-800/60">
+            <div className="p-6 flex items-center gap-3 border-b border-[#18181c]">
               <div className="w-8 h-8 bg-emerald-600 rounded flex items-center justify-center text-xs font-bold text-white shadow">
                 SKP
               </div>
@@ -488,11 +488,11 @@ export default function App() {
 
             {/* Mobile Navigation Links */}
             <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-              <div className="text-slate-500 text-[10px] font-extrabold uppercase tracking-widest px-2 mb-2">Management</div>
+              <div className="text-slate-600 text-[9px] font-black uppercase tracking-widest px-2 mb-2">Management</div>
               
               <button 
                 onClick={() => { setActiveTab('dashboard'); setMobileMenuOpen(false); }}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'dashboard' ? 'bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-100'}`}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'dashboard' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
               >
                 <LayoutDashboard className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'dashboard' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
                 <span>{t('Overview Dashboard')}</span>
@@ -500,7 +500,7 @@ export default function App() {
               
               <button 
                 onClick={() => { setActiveTab('paddy_entry'); setMobileMenuOpen(false); }}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'paddy_entry' ? 'bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-100'}`}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'paddy_entry' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
               >
                 <FileSpreadsheet className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'paddy_entry' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
                 <span>{t('Paddy Entry')}</span>
@@ -508,7 +508,7 @@ export default function App() {
               
               <button 
                 onClick={() => { setActiveTab('paddy_purchase'); setMobileMenuOpen(false); }}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'paddy_purchase' ? 'bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-100'}`}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'paddy_purchase' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
               >
                 <Receipt className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'paddy_purchase' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
                 <span>{t('Paddy Purchase')}</span>
@@ -516,17 +516,17 @@ export default function App() {
               
               <button 
                 onClick={() => { setActiveTab('stock_milling'); setMobileMenuOpen(false); }}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'stock_milling' ? 'bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-100'}`}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'stock_milling' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
               >
                 <Warehouse className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'stock_milling' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
                 <span>{t('Milling & Stock')}</span>
               </button>
       
-              <div className="text-slate-500 text-[10px] font-extrabold uppercase tracking-widest px-2 mt-6 mb-2">Systems & Analytics</div>
+              <div className="text-slate-600 text-[9px] font-black uppercase tracking-widest px-2 mt-6 mb-2">Systems & Analytics</div>
       
               <button 
                 onClick={() => { setActiveTab('quality_finance'); setMobileMenuOpen(false); }}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'quality_finance' ? 'bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-100'}`}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'quality_finance' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
               >
                 <ShieldCheck className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'quality_finance' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
                 <span>{t('Quality & Finance')}</span>
@@ -534,7 +534,7 @@ export default function App() {
               
               <button 
                 onClick={() => { setActiveTab('labor_wages'); setMobileMenuOpen(false); }}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'labor_wages' ? 'bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-100'}`}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'labor_wages' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
               >
                 <Users className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'labor_wages' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
                 <span>{t('Labor & Wages')}</span>
@@ -542,7 +542,7 @@ export default function App() {
               
               <button 
                 onClick={() => { setActiveTab('executive_insights'); setMobileMenuOpen(false); }}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'executive_insights' ? 'bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-100'}`}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'executive_insights' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
               >
                 <Mic className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'executive_insights' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
                 <span>{t('Voice & Insights')}</span>
@@ -550,8 +550,8 @@ export default function App() {
             </nav>
      
             {/* Mobile User Status Card */}
-            <div className="p-4 mt-auto border-t border-slate-800">
-              <div className="flex items-center gap-3 p-2.5 bg-slate-800/40 rounded-lg border border-slate-800/80">
+            <div className="p-4 mt-auto border-t border-[#18181c]">
+              <div className="flex items-center gap-3 p-2.5 bg-[#121215] rounded-xl border border-[#1e1e24]/60">
                 <div className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-xs font-bold text-emerald-400">SK</div>
                 <div className="overflow-hidden">
                   <p className="text-xs text-white font-medium truncate">{t('SKP Admin')}</p>
@@ -564,9 +564,9 @@ export default function App() {
       )}
 
       {/* Navigation Sidebar (Professional Polish Theme, Emerald) - Hidden on mobile/tablets */}
-      <aside className="w-64 bg-slate-900 flex flex-col shrink-0 hidden lg:flex">
+      <aside className="w-64 bg-[#0c0c0e] border-r border-[#18181c] flex flex-col shrink-0 hidden lg:flex">
         {/* Brand Header */}
-        <div className="p-6 flex items-center gap-3 border-b border-slate-800/50 mb-4">
+        <div className="p-6 flex items-center gap-3 border-b border-[#18181c] mb-4">
           <div className="w-8 h-8 bg-emerald-600 rounded flex items-center justify-center text-xs font-bold text-white shadow">
             SKP
           </div>
@@ -578,11 +578,11 @@ export default function App() {
         
         {/* Navigation Sidebar Items */}
         <nav className="flex-1 px-4 space-y-1">
-          <div className="text-slate-500 text-[10px] font-extrabold uppercase tracking-widest px-2 mb-2">Management</div>
+          <div className="text-slate-600 text-[9px] font-black uppercase tracking-widest px-2 mb-2">Management</div>
           
           <button 
             onClick={() => setActiveTab('dashboard')}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'dashboard' ? 'bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-100'}`}
+            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'dashboard' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
           >
             <LayoutDashboard className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'dashboard' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
             <span>{t('Overview Dashboard')}</span>
@@ -590,7 +590,7 @@ export default function App() {
           
           <button 
             onClick={() => setActiveTab('paddy_entry')}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'paddy_entry' ? 'bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-100'}`}
+            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'paddy_entry' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
           >
             <FileSpreadsheet className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'paddy_entry' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
             <span>{t('Paddy Entry')}</span>
@@ -598,7 +598,7 @@ export default function App() {
           
           <button 
             onClick={() => setActiveTab('paddy_purchase')}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'paddy_purchase' ? 'bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-100'}`}
+            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'paddy_purchase' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
           >
             <Receipt className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'paddy_purchase' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
             <span>{t('Paddy Purchase')}</span>
@@ -606,17 +606,17 @@ export default function App() {
           
           <button 
             onClick={() => setActiveTab('stock_milling')}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'stock_milling' ? 'bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-100'}`}
+            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'stock_milling' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
           >
             <Warehouse className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'stock_milling' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
             <span>{t('Milling & Stock')}</span>
           </button>
   
-          <div className="text-slate-500 text-[10px] font-extrabold uppercase tracking-widest px-2 mt-6 mb-2">Systems & Analytics</div>
+          <div className="text-slate-600 text-[9px] font-black uppercase tracking-widest px-2 mt-6 mb-2">Systems & Analytics</div>
   
           <button 
             onClick={() => setActiveTab('quality_finance')}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'quality_finance' ? 'bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-100'}`}
+            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'quality_finance' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
           >
             <ShieldCheck className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'quality_finance' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
             <span>{t('Quality & Finance')}</span>
@@ -624,7 +624,7 @@ export default function App() {
           
           <button 
             onClick={() => setActiveTab('labor_wages')}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'labor_wages' ? 'bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-100'}`}
+            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'labor_wages' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
           >
             <Users className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'labor_wages' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
             <span>{t('Labor & Wages')}</span>
@@ -632,7 +632,7 @@ export default function App() {
           
           <button 
             onClick={() => setActiveTab('executive_insights')}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'executive_insights' ? 'bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500' : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-100'}`}
+            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'executive_insights' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
           >
             <Mic className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'executive_insights' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
             <span>{t('Voice & Insights')}</span>
@@ -670,26 +670,26 @@ export default function App() {
           
           <div className="flex items-center gap-2 md:gap-3">
             {/* Elegant high-contrast Language Toggle */}
-            <div className="flex bg-slate-100 rounded-xl p-0.5 border border-slate-200 shadow-2xs">
+            <div className="flex bg-[#f4f4f5] rounded-xl p-0.5 border border-[#e4e4e7] shadow-2xs">
               <button
                 onClick={() => setLanguage('en')}
-                className={`px-3 py-1 text-[10px] md:text-xs font-bold rounded-lg transition-all ${language === 'en' ? 'bg-white text-emerald-700 shadow-xs' : 'text-slate-500 hover:text-slate-800'}`}
+                className={`px-3 py-1 text-[10px] md:text-xs font-bold rounded-lg transition-all ${language === 'en' ? 'bg-white text-emerald-800 shadow-xs' : 'text-stone-500 hover:text-stone-800'}`}
               >
                 EN
               </button>
               <button
                 onClick={() => setLanguage('ta')}
-                className={`px-3 py-1 text-[10px] md:text-xs font-bold rounded-lg transition-all ${language === 'ta' ? 'bg-white text-emerald-700 shadow-xs' : 'text-slate-500 hover:text-slate-800'}`}
+                className={`px-3 py-1 text-[10px] md:text-xs font-bold rounded-lg transition-all ${language === 'ta' ? 'bg-white text-emerald-800 shadow-xs' : 'text-stone-500 hover:text-stone-800'}`}
               >
                 தமிழ்
               </button>
             </div>
 
-            <div className="bg-slate-100 rounded-xl py-1.5 px-3 border border-slate-200 hidden sm:flex items-center gap-2">
-              <span className="font-mono text-[10px] md:text-xs font-black text-slate-600">{currentTime}</span>
+            <div className="bg-[#f4f4f5] rounded-xl py-1.5 px-3 border border-[#e4e4e7] hidden sm:flex items-center gap-2">
+              <span className="font-mono text-[10px] md:text-xs font-black text-stone-600">{currentTime}</span>
             </div>
             
-            <div className="text-[9px] md:text-[10px] bg-emerald-900/10 text-emerald-700 font-extrabold tracking-widest px-2.5 md:px-3 py-1.5 rounded-full uppercase border border-emerald-200 hidden sm:inline-block">
+            <div className="text-[9px] md:text-[10px] bg-emerald-50 text-emerald-800 font-extrabold tracking-widest px-2.5 md:px-3 py-1.5 rounded-full uppercase border border-emerald-200/60 hidden sm:inline-block shadow-3xs">
               {t('Active Workspace')}
             </div>
           </div>

@@ -131,7 +131,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <h4 className="font-bold text-xs text-slate-500 uppercase tracking-wider">{t("Raw vs Milled Inventory")}</h4>
           <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-wider">
             <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-xs bg-sky-500 block" />
+              <span className="w-2.5 h-2.5 rounded-xs bg-teal-500 block" />
               <span className="text-slate-500">{t("Paddy Stock")}</span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -153,11 +153,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   <div className="flex items-center gap-3">
                     <div className="h-2 bg-slate-200/50 rounded-full overflow-hidden flex-1 flex">
                       <div 
-                        className="h-full rounded-full transition-all duration-500 ease-out bg-sky-500" 
+                        className="h-full rounded-full transition-all duration-500 ease-out bg-teal-600" 
                         style={{ width: `${paddyPct}%` }}
                       />
                     </div>
-                    <span className="text-[10px] font-black text-sky-700 w-16 text-right">
+                    <span className="text-[10px] font-black text-teal-700 w-16 text-right">
                       {Math.round(row.paddy).toLocaleString('en-IN')} {t("bags")}
                     </span>
                   </div>
@@ -165,7 +165,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   <div className="flex items-center gap-3">
                     <div className="h-2 bg-slate-200/50 rounded-full overflow-hidden flex-1 flex">
                       <div 
-                        className="h-full rounded-full transition-all duration-500 ease-out bg-emerald-500" 
+                        className="h-full rounded-full transition-all duration-500 ease-out bg-emerald-600" 
                         style={{ width: `${ricePct}%` }}
                       />
                     </div>
@@ -209,10 +209,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="h-48 flex items-end justify-around relative pt-8 border-b border-slate-200 px-2">
           {/* Target Line at 78% */}
           <div 
-            className="absolute left-0 right-0 border-t border-dashed border-red-500/80 z-10 flex items-center justify-end"
+            className="absolute left-0 right-0 border-t border-dashed border-red-400/80 z-10 flex items-center justify-end"
             style={{ bottom: '78%' }}
           >
-            <span className="bg-red-55 text-red-600 font-extrabold text-[8px] md:text-[9px] px-1.5 py-0.5 rounded border border-red-200 mr-2 -mt-3">
+            <span className="bg-red-50 text-red-700 font-extrabold text-[8px] md:text-[9px] px-1.5 py-0.5 rounded border border-red-200 mr-2 -mt-3 shadow-3xs">
               {t("Target Yield")} (78%)
             </span>
           </div>
@@ -282,7 +282,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
       <div className="border border-slate-200 bg-white rounded-2xl p-6 space-y-6 shadow-xs">
         <div className="flex justify-between items-center border-b border-slate-100 pb-3">
           <h4 className="font-bold text-xs text-slate-500 uppercase tracking-wider">{t("Daily Procurement Trend")}</h4>
-          <span className="text-[10px] font-extrabold bg-sky-50 text-sky-700 px-2 py-0.5 rounded-full uppercase border border-sky-100">
+          <span className="text-[10px] font-extrabold bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full uppercase border border-amber-100">
             {new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' })}
           </span>
         </div>
@@ -295,7 +295,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <div className="font-bold text-slate-600 truncate">{t(row.label)}</div>
                 <div className="h-3 bg-slate-50 rounded-full overflow-hidden border border-slate-100 flex">
                   <div 
-                    className="h-full rounded-full transition-all duration-500 ease-out bg-sky-500" 
+                    className="h-full rounded-full transition-all duration-500 ease-out bg-amber-500" 
                     style={{ width: `${pct}%` }}
                   />
                 </div>
@@ -358,65 +358,65 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-            <span className="text-[10px] text-slate-400 uppercase font-black block">{t('Today Purchase')}</span>
-            <b className="block text-xl text-slate-800 font-extrabold mt-1">{money(todayPurchaseValue)}</b>
-            <small className="block text-[11px] text-slate-400 mt-1">
+          <div className="p-4 bg-[#f8fafc] border border-slate-200 rounded-xl shadow-2xs">
+            <span className="text-[10px] text-slate-500 uppercase font-extrabold tracking-wider block">{t('Today Purchase')}</span>
+            <b className="block text-xl text-slate-800 font-black mt-1">{money(todayPurchaseValue)}</b>
+            <small className="block text-[11px] text-slate-500 mt-1">
               {todaysPurchases.length} {t('loads')} · {(todayPurchaseNet/1000).toFixed(1)} MT
             </small>
           </div>
-          <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-            <span className="text-[10px] text-slate-400 uppercase font-black block">{t('Today Processed')}</span>
-            <b className="block text-xl text-slate-800 font-extrabold mt-1">
+          <div className="p-4 bg-[#fafaf9] border border-stone-200 rounded-xl shadow-2xs">
+            <span className="text-[10px] text-stone-500 uppercase font-extrabold tracking-wider block">{t('Today Processed')}</span>
+            <b className="block text-xl text-stone-800 font-black mt-1">
               {todayProdBags ? `${Math.round(todayProdBags)} ${t('bags')}` : `0 ${t('bags')}`}
             </b>
-            <small className="block text-[11px] text-slate-400 mt-1">
+            <small className="block text-[11px] text-stone-500 mt-1">
               {todaysProduction.length} {t('parboiled batches')}
             </small>
           </div>
-          <div className="p-4 bg-emerald-50/50 border border-emerald-100 rounded-xl">
-            <span className="text-[10px] text-emerald-800 uppercase font-black block">{t('Current Paddy Stock')}</span>
-            <b className="block text-xl text-emerald-700 font-extrabold mt-1">
+          <div className="p-4 bg-[#f0fdf4] border border-emerald-200 rounded-xl shadow-2xs">
+            <span className="text-[10px] text-emerald-800 uppercase font-extrabold tracking-wider block">{t('Current Paddy Stock')}</span>
+            <b className="block text-xl text-emerald-950 font-black mt-1">
               {Math.round(paddyStockBags).toLocaleString('en-IN')}
             </b>
-            <small className="block text-[11px] text-emerald-600 mt-1">{t('available bags in silos/godowns')}</small>
+            <small className="block text-[11px] text-emerald-700 mt-1">{t('available bags in silos/godowns')}</small>
           </div>
-          <div className="p-4 bg-emerald-50/50 border border-emerald-100 rounded-xl">
-            <span className="text-[10px] text-emerald-800 uppercase font-black block">{t('Current Rice Stock')}</span>
-            <b className="block text-xl text-emerald-700 font-extrabold mt-1">
+          <div className="p-4 bg-[#ecfdf5] border border-teal-200 rounded-xl shadow-2xs">
+            <span className="text-[10px] text-teal-800 uppercase font-extrabold tracking-wider block">{t('Current Rice Stock')}</span>
+            <b className="block text-xl text-teal-950 font-black mt-1">
               {Math.round(riceStockBags).toLocaleString('en-IN')}
             </b>
-            <small className="block text-[11px] text-emerald-600 mt-1">{t('available processed bags')}</small>
+            <small className="block text-[11px] text-teal-700 mt-1">{t('available processed bags')}</small>
           </div>
-          <div className="p-4 bg-amber-50/50 border border-amber-100 rounded-xl">
-            <span className="text-[10px] text-amber-800 uppercase font-black block">{t('Pending Supplier Balance')}</span>
-            <b className="block text-xl text-amber-700 font-extrabold mt-1">{money(pendingAmt)}</b>
-            <small className="block text-[11px] text-amber-600 mt-1">
+          <div className="p-4 bg-[#fffbeb] border border-amber-200 rounded-xl shadow-2xs">
+            <span className="text-[10px] text-amber-800 uppercase font-extrabold tracking-wider block">{t('Pending Supplier Balance')}</span>
+            <b className="block text-xl text-amber-950 font-black mt-1">{money(pendingAmt)}</b>
+            <small className="block text-[11px] text-amber-700 mt-1">
               {pendingPurchases.length} {t('accounts outstanding')}
             </small>
           </div>
-          <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-            <span className="text-[10px] text-slate-400 uppercase font-black block">{t('Shipped Deliveries Today')}</span>
-            <b className="block text-xl text-slate-800 font-extrabold mt-1">
+          <div className="p-4 bg-[#f8fafc] border border-slate-200 rounded-xl shadow-2xs">
+            <span className="text-[10px] text-slate-500 uppercase font-extrabold tracking-wider block">{t('Shipped Deliveries Today')}</span>
+            <b className="block text-xl text-slate-800 font-black mt-1">
               {loadingBags ? `${Math.round(loadingBags)} ${t('bags')}` : `0 ${t('bags')}`}
             </b>
-            <small className="block text-[11px] text-slate-400 mt-1">{todaysLoading.length} {t('vehicle loading logs')}</small>
+            <small className="block text-[11px] text-slate-500 mt-1">{todaysLoading.length} {t('vehicle loading logs')}</small>
           </div>
-          <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-            <span className="text-[10px] text-slate-400 uppercase font-black block">{t('Highest Volume Supplier')}</span>
-            <b className="block text-base text-slate-700 font-extrabold truncate mt-2">
+          <div className="p-4 bg-[#f5f5f4] border border-stone-200 rounded-xl shadow-2xs">
+            <span className="text-[10px] text-stone-500 uppercase font-extrabold tracking-wider block">{t('Highest Volume Supplier')}</span>
+            <b className="block text-sm text-stone-800 font-extrabold truncate mt-2">
               {bestSupplier ? bestSupplier.name : '-'}
             </b>
-            <small className="block text-[11px] text-slate-400 mt-1">
+            <small className="block text-[11px] text-stone-500 mt-1">
               {bestSupplier ? `${(bestSupplier.net/1000).toFixed(0)} ${t('Tons supplied')}` : t('Need purchase data')}
             </small>
           </div>
-          <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-            <span className="text-[10px] text-slate-400 uppercase font-black block">{t('Est. Gross Profit (Milling)')}</span>
-            <b className={`block text-xl font-extrabold mt-1 ${grossProfitVal >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+          <div className={`p-4 rounded-xl border shadow-2xs ${grossProfitVal >= 0 ? 'bg-[#f0fdf4] border-emerald-200' : 'bg-[#fef2f2] border-red-200'}`}>
+            <span className={`text-[10px] uppercase font-extrabold tracking-wider block ${grossProfitVal >= 0 ? 'text-emerald-800' : 'text-red-800'}`}>{t('Est. Gross Profit (Milling)')}</span>
+            <b className={`block text-xl font-black mt-1 ${grossProfitVal >= 0 ? 'text-emerald-950' : 'text-red-950'}`}>
               {money(grossProfitVal)}
             </b>
-            <small className="block text-[11px] text-slate-400 mt-1">{t('derived from market selling averages')}</small>
+            <small className={`block text-[11px] mt-1 ${grossProfitVal >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>{t('derived from market selling averages')}</small>
           </div>
         </div>
       </div>
