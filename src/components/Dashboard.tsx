@@ -131,11 +131,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <h4 className="font-bold text-xs text-slate-500 uppercase tracking-wider">{t("Raw vs Milled Inventory")}</h4>
           <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-wider">
             <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-xs bg-[#475569] block" />
+              <span className="w-2.5 h-2.5 rounded-xs bg-[#6366f1] block" />
               <span className="text-slate-500">{t("Paddy Stock")}</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-xs bg-[#94a3b8] block" />
+              <span className="w-2.5 h-2.5 rounded-xs bg-[#10b981] block" />
               <span className="text-slate-500">{t("Rice Stock")}</span>
             </div>
           </div>
@@ -153,7 +153,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   <div className="flex items-center gap-3">
                     <div className="h-2 bg-slate-200/50 rounded-full overflow-hidden flex-1 flex">
                       <div 
-                        className="h-full rounded-full transition-all duration-500 ease-out bg-[#475569]" 
+                        className="h-full rounded-full transition-all duration-500 ease-out bg-[#6366f1]" 
                         style={{ width: `${paddyPct}%` }}
                       />
                     </div>
@@ -165,7 +165,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   <div className="flex items-center gap-3">
                     <div className="h-2 bg-slate-200/50 rounded-full overflow-hidden flex-1 flex">
                       <div 
-                        className="h-full rounded-full transition-all duration-500 ease-out bg-[#94a3b8]" 
+                        className="h-full rounded-full transition-all duration-500 ease-out bg-[#10b981]" 
                         style={{ width: `${ricePct}%` }}
                       />
                     </div>
@@ -231,7 +231,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 {/* Bar */}
                 <div className="w-8 md:w-10 bg-slate-100 rounded-t-lg relative h-36 flex items-end">
                   <div 
-                    className={`w-full rounded-t-lg transition-all duration-300 relative ${b.yieldPercent >= 78 ? 'bg-emerald-600 group-hover:bg-emerald-500' : 'bg-amber-500 group-hover:bg-amber-400'}`}
+                    className={`w-full rounded-t-lg transition-all duration-300 relative \${b.yieldPercent >= 78 ? 'bg-indigo-600 group-hover:bg-indigo-500' : 'bg-rose-500 group-hover:bg-rose-400'}`}
                     style={{ height: `${heightPct}%` }}
                   >
                     {/* Text value inside or on top of bar */}
@@ -282,7 +282,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
       <div className="border border-slate-200 bg-white rounded-2xl p-6 space-y-6 shadow-xs">
         <div className="flex justify-between items-center border-b border-slate-100 pb-3">
           <h4 className="font-bold text-xs text-slate-500 uppercase tracking-wider">{t("Daily Procurement Trend")}</h4>
-          <span className="text-[10px] font-extrabold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full uppercase border border-slate-200">
+          <span className="text-[10px] font-extrabold bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full uppercase border border-indigo-100">
             {new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' })}
           </span>
         </div>
@@ -295,7 +295,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <div className="font-bold text-slate-600 truncate">{t(row.label)}</div>
                 <div className="h-3 bg-slate-50 rounded-full overflow-hidden border border-slate-100 flex">
                   <div 
-                    className="h-full rounded-full transition-all duration-500 ease-out bg-[#475569]" 
+                    className="h-full rounded-full transition-all duration-500 ease-out bg-[#6366f1]" 
                     style={{ width: `${pct}%` }}
                   />
                 </div>
@@ -349,24 +349,24 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
   const getCardStyle = (type: 'paddy' | 'rice' | 'profit' | 'balance') => {
     if (type === 'paddy') {
-      if (paddyStockBags < 600) return { card: 'bg-[#fef2f2] border-red-200', text: 'text-red-950', label: 'text-red-800', small: 'text-red-700' };
-      if (paddyStockBags < 1000) return { card: 'bg-[#fffbeb] border-amber-200', text: 'text-amber-955', label: 'text-amber-800', small: 'text-amber-700' };
-      return { card: 'bg-[#f8fafc] border-slate-200', text: 'text-slate-900', label: 'text-slate-500', small: 'text-slate-500' };
+      if (paddyStockBags < 600) return { card: 'bg-[#fff5f5] border-[#feb2b2]', text: 'text-[#9b2c2c]', label: 'text-[#c53030]', small: 'text-[#e53e3e]' };
+      if (paddyStockBags < 1000) return { card: 'bg-[#fffbeb] border-[#fef08a]', text: 'text-[#713f12]', label: 'text-[#854d0e]', small: 'text-[#a16207]' };
+      return { card: 'bg-[#f0f4f8] border-[#d9e2ec]', text: 'text-[#102a43]', label: 'text-[#334e68]', small: 'text-[#486581]' };
     }
     if (type === 'rice') {
-      if (riceStockBags < 100) return { card: 'bg-[#fef2f2] border-red-200', text: 'text-red-955', label: 'text-red-800', small: 'text-red-750' };
-      if (riceStockBags < 300) return { card: 'bg-[#fffbeb] border-amber-200', text: 'text-amber-955', label: 'text-amber-800', small: 'text-amber-700' };
-      return { card: 'bg-[#f8fafc] border-slate-200', text: 'text-slate-900', label: 'text-slate-500', small: 'text-slate-500' };
+      if (riceStockBags < 100) return { card: 'bg-[#fff5f5] border-[#feb2b2]', text: 'text-[#9b2c2c]', label: 'text-[#c53030]', small: 'text-[#e53e3e]' };
+      if (riceStockBags < 300) return { card: 'bg-[#fffbeb] border-[#fef08a]', text: 'text-[#713f12]', label: 'text-[#854d0e]', small: 'text-[#a16207]' };
+      return { card: 'bg-[#f2faf7] border-[#d1ebe1]', text: 'text-[#0f5132]', label: 'text-[#198754]', small: 'text-[#20c997]' };
     }
     if (type === 'profit') {
-      if (grossProfitVal < 0) return { card: 'bg-[#fef2f2] border-red-200', text: 'text-red-955', label: 'text-red-800', small: 'text-red-700' };
-      if (grossProfitVal === 0) return { card: 'bg-[#f8fafc] border-slate-200', text: 'text-slate-900', label: 'text-slate-500', small: 'text-slate-500' };
-      return { card: 'bg-[#f0fdf4] border-emerald-200', text: 'text-emerald-950', label: 'text-emerald-800', small: 'text-emerald-700' };
+      if (grossProfitVal < 0) return { card: 'bg-[#fff5f5] border-[#feb2b2]', text: 'text-[#9b2c2c]', label: 'text-[#c53030]', small: 'text-[#e53e3e]' };
+      if (grossProfitVal === 0) return { card: 'bg-[#f0f4f8] border-[#d9e2ec]', text: 'text-[#102a43]', label: 'text-[#334e68]', small: 'text-[#486581]' };
+      return { card: 'bg-[#f0fdf4] border-[#bbf7d0]', text: 'text-[#14532d]', label: 'text-[#166534]', small: 'text-[#15803d]' };
     }
     // balance
-    if (pendingAmt > 300000) return { card: 'bg-[#fef2f2] border-red-200', text: 'text-red-955', label: 'text-red-800', small: 'text-red-700' };
-    if (pendingAmt > 0) return { card: 'bg-[#fffbeb] border-amber-200', text: 'text-amber-955', label: 'text-amber-800', small: 'text-amber-700' };
-    return { card: 'bg-[#f8fafc] border-slate-200', text: 'text-slate-900', label: 'text-slate-500', small: 'text-slate-500' };
+    if (pendingAmt > 300000) return { card: 'bg-[#fff5f5] border-[#feb2b2]', text: 'text-[#9b2c2c]', label: 'text-[#c53030]', small: 'text-[#e53e3e]' };
+    if (pendingAmt > 0) return { card: 'bg-[#fffbeb] border-[#fef08a]', text: 'text-[#713f12]', label: 'text-[#854d0e]', small: 'text-[#a16207]' };
+    return { card: 'bg-[#fafaf9] border-[#e7e5e4]', text: 'text-[#44403c]', label: 'text-[#57534e]', small: 'text-[#78716c]' };
   };
 
   return (
@@ -492,12 +492,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="space-y-6 flex flex-col">
           {renderYieldPerformanceChart()}
           
-          <div className="bg-slate-800 text-white rounded-2xl p-6 shadow-md shadow-slate-200/40 flex-1 flex flex-col justify-center min-h-[160px] border border-slate-700/50">
-            <span className="bg-slate-700 text-slate-100 text-[10px] px-2.5 py-1 rounded-full font-black uppercase tracking-wider w-fit border border-slate-600/60">
+          <div className="bg-[#1e1b4b] text-white rounded-2xl p-6 shadow-md shadow-indigo-900/20 flex-1 flex flex-col justify-center min-h-[160px] border border-[#312e81]">
+            <span className="bg-[#312e81] text-[#c7d2fe] text-[10px] px-2.5 py-1 rounded-full font-black uppercase tracking-wider w-fit border border-[#4338ca]/30">
               {t("Strategic Operations Summary")}
             </span>
             <p 
-              className="text-sm leading-relaxed text-slate-200 mt-4 font-semibold"
+              className="text-sm leading-relaxed text-[#c7d2fe] mt-4 font-semibold"
               dangerouslySetInnerHTML={{ 
                 __html: language === 'ta' 
                   ? `ஆலையின் தற்போதைய நிலவரப்படி, முக்கிய நெல் ரகங்கள் கொள்முதல் மற்றும் உற்பத்தி சுழற்சி சீராக உள்ளது. நெல் இருப்பு ${Math.round(paddyStockBags)} மூட்டைகளும், அரிசி இருப்பு ${Math.round(riceStockBags)} மூட்டைகளும் உள்ளன. விவசாயிகளுக்கு செலுத்த வேண்டிய நிலுவைத்தொகை ${money(pendingAmt)} ஆகும்.`
