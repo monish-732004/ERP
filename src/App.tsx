@@ -33,6 +33,7 @@ import { QualityAndFinance } from './components/QualityAndFinance';
 import { AttendanceTracker } from './components/AttendanceTracker';
 import { VoiceAndInsights } from './components/VoiceAndInsights';
 import { LorryPrintModal } from './components/LorryPrintModal';
+import logoImg from '../assets/skp_brand_logo.webp';
 import { 
   LayoutDashboard, 
   FileSpreadsheet, 
@@ -588,12 +589,11 @@ export default function App() {
               onMouseLeave={handleEndPress}
               onTouchStart={handleStartPress}
               onTouchEnd={handleEndPress}
-              className={`w-20 h-20 bg-gradient-to-tr from-emerald-600 to-emerald-400 text-white rounded-2xl flex flex-col items-center justify-center font-bold shadow-lg select-none cursor-pointer transition-all duration-300 ${
+              className={`w-20 h-20 bg-slate-800 border border-slate-700/50 rounded-2xl flex items-center justify-center shadow-lg select-none cursor-pointer transition-all duration-300 overflow-hidden ${
                 isPressing ? 'scale-90 opacity-90 rotate-3 ring-4 ring-emerald-500/30' : 'hover:scale-105 hover:shadow-emerald-500/20 active:scale-95'
               }`}
             >
-              <span className="text-2xl font-black tracking-wide leading-none">SKP</span>
-              <span className="text-[8px] uppercase tracking-widest text-emerald-100 font-extrabold mt-1">Logo</span>
+              <img src={logoImg} alt="SKP Brand Logo" className="w-full h-full object-cover" />
             </div>
             {isPressing && (
               <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-emerald-400 animate-pulse whitespace-nowrap">
@@ -803,9 +803,11 @@ export default function App() {
               className="p-6 flex items-center gap-3 border-b border-[#18181c] cursor-pointer select-none hover:bg-slate-900/30 transition"
               title="Long press to authenticate as Admin"
             >
-              <div className={`w-8 h-8 rounded flex items-center justify-center text-xs font-bold text-white shadow transition-all duration-200 ${isPressing ? 'bg-emerald-500 scale-105' : 'bg-emerald-600'}`}>
-                SKP
-              </div>
+              <img 
+                src={logoImg} 
+                alt="SKP Logo" 
+                className={`w-8 h-8 rounded object-cover shadow transition-all duration-200 ${isPressing ? 'scale-105 border border-emerald-500/50' : ''}`}
+              />
               <div>
                 <span className="text-white font-bold text-base tracking-tight block leading-tight">SKP RICE MILL</span>
                 <span className="text-[9px] text-slate-500 font-extrabold uppercase tracking-widest block">
@@ -922,9 +924,11 @@ export default function App() {
           className="p-6 flex items-center gap-3 border-b border-[#18181c] mb-4 cursor-pointer select-none hover:bg-slate-900/30 transition"
           title="Long press to authenticate as Admin"
         >
-          <div className={`w-8 h-8 rounded flex items-center justify-center text-xs font-bold text-white shadow transition-all duration-200 ${isPressing ? 'bg-emerald-500 scale-105 animate-pulse' : 'bg-emerald-600'}`}>
-            SKP
-          </div>
+          <img 
+            src={logoImg} 
+            alt="SKP Logo" 
+            className={`w-8 h-8 rounded object-cover shadow transition-all duration-200 ${isPressing ? 'scale-105 border border-emerald-500/50' : ''}`}
+          />
           <div>
             <span className="text-white font-bold text-base tracking-tight block leading-tight">SKP RICE MILL</span>
             <span className="text-[9px] text-slate-500 font-extrabold uppercase tracking-widest block">
