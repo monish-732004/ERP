@@ -371,26 +371,26 @@ export default function App() {
 
     entries.forEach(e => {
       const r = ensure(e.destination || 'Paddy Storage 1', e.variety || 'RNR');
-      r.inBags += e.bags || e.calcBags || 0;
+      r.inBags += Number(e.bags || e.calcBags || 0);
     });
 
     openingStocks.forEach(o => {
       const r = ensure(o.storage, o.variety);
-      r.openingBags += o.bags || 0;
+      r.openingBags += Number(o.bags || 0);
     });
 
     paddyMovements.forEach(m => {
-      ensure(m.fromStorage, m.variety).transferOutBags += m.bags || 0;
-      ensure(m.toStorage, m.variety).transferInBags += m.bags || 0;
+      ensure(m.fromStorage, m.variety).transferOutBags += Number(m.bags || 0);
+      ensure(m.toStorage, m.variety).transferInBags += Number(m.bags || 0);
     });
 
     productions.forEach(p => {
       if (p.sourceLines && p.sourceLines.length) {
         p.sourceLines.forEach(sl => {
-          ensure(sl.source, sl.variety).usedBags += sl.bags || 0;
+          ensure(sl.source, sl.variety).usedBags += Number(sl.bags || 0);
         });
       } else {
-        ensure(p.source, p.variety).usedBags += p.paddyBags || 0;
+        ensure(p.source, p.variety).usedBags += Number(p.paddyBags || 0);
       }
     });
 
@@ -708,6 +708,7 @@ export default function App() {
               riceStockBags={riceStockBags}
               paddyBalances={paddyBalances}
               riceBalances={riceBalances}
+              paddyMovements={paddyMovements}
             />
           )}
 
@@ -757,6 +758,7 @@ export default function App() {
               onUpdateProductionBatch={onUpdateProductionBatch} 
               onDeleteDoc={onDeleteDoc} 
               onViewProductionReport={handleViewProductionReport} 
+              qualityRecords={qualityRecords}
             />
           )}
 
