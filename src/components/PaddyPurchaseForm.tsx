@@ -48,7 +48,6 @@ export const PaddyPurchaseForm: React.FC<PaddyPurchaseFormProps> = ({
   const [puLorry, setPuLorry] = useState('');
   const [puVariety, setPuVariety] = useState('RNR');
   const [puNewVariety, setPuNewVariety] = useState('');
-  const [puNewSupplier, setPuNewSupplier] = useState('');
 
   // Primary load weights
   const [puLoad, setPuLoad] = useState('');
@@ -153,14 +152,7 @@ export const PaddyPurchaseForm: React.FC<PaddyPurchaseFormProps> = ({
     alert("New variety saved!");
   };
 
-  const saveSupplier = async () => {
-    const name = puNewSupplier.trim();
-    if (!name) return;
-    await onAddSupplier(name);
-    setPuParty(name);
-    setPuNewSupplier('');
-    alert("New supplier saved!");
-  };
+
 
   // Live Math calculations
   const getCalculatedValues = () => {
@@ -679,7 +671,7 @@ export const PaddyPurchaseForm: React.FC<PaddyPurchaseFormProps> = ({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
               <div>
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t("Party / Supplier")}</label>
                 <select 
@@ -690,19 +682,6 @@ export const PaddyPurchaseForm: React.FC<PaddyPurchaseFormProps> = ({
                   <option value="">{t("Select Supplier")}</option>
                   {suppliers.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
-              </div>
-              <div className="flex gap-2 items-end">
-                <div className="flex-1">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t("Add Supplier Name")}</label>
-                  <input 
-                    type="text"
-                    value={puNewSupplier}
-                    onChange={(e) => setPuNewSupplier(e.target.value)}
-                    placeholder={t("New Supplier")}
-                    className="w-full p-1.5 border border-slate-200 rounded-lg text-xs text-slate-800"
-                  />
-                </div>
-                <button onClick={saveSupplier} className="py-2 px-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold">{t("Add")}</button>
               </div>
               <div>
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t("Primary Lorry No")}</label>
