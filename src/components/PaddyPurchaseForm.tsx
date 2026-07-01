@@ -47,7 +47,7 @@ export const PaddyPurchaseForm: React.FC<PaddyPurchaseFormProps> = ({
   const [puParty, setPuParty] = useState('');
   const [puLorry, setPuLorry] = useState('');
   const [puVariety, setPuVariety] = useState('RNR');
-  const [puNewVariety, setPuNewVariety] = useState('');
+
 
   // Primary load weights
   const [puLoad, setPuLoad] = useState('');
@@ -143,14 +143,7 @@ export const PaddyPurchaseForm: React.FC<PaddyPurchaseFormProps> = ({
     }
   };
 
-  const saveVariety = async () => {
-    const name = puNewVariety.trim();
-    if (!name) return;
-    await onAddVariety(name);
-    setPuVariety(name);
-    setPuNewVariety('');
-    alert("New variety saved!");
-  };
+
 
 
 
@@ -717,7 +710,7 @@ export const PaddyPurchaseForm: React.FC<PaddyPurchaseFormProps> = ({
               <span>{t("Primary Paddy variety weight & Rate")}</span>
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div>
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t("Variety")}</label>
                 <select 
@@ -727,19 +720,6 @@ export const PaddyPurchaseForm: React.FC<PaddyPurchaseFormProps> = ({
                 >
                   {varieties.map(v => <option key={v} value={v}>{v}</option>)}
                 </select>
-              </div>
-              <div className="flex gap-2 items-end">
-                <div className="flex-1">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t("Add Variety Name")}</label>
-                  <input 
-                    type="text"
-                    value={puNewVariety}
-                    onChange={(e) => setPuNewVariety(e.target.value)}
-                    placeholder={t("New Variety")}
-                    className="w-full p-1.5 border border-slate-200 rounded-lg text-xs text-slate-800"
-                  />
-                </div>
-                <button onClick={saveVariety} className="py-2 px-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold">{t("Add")}</button>
               </div>
               <div>
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t("Gross Weight (Load Kg)")}</label>
