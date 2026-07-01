@@ -51,9 +51,129 @@ export default function App() {
   const { language, setLanguage, t } = useTranslation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Portal Roles: 'login' | 'worker' | 'admin'
+  const [userRole, setUserRole] = useState<'login' | 'worker' | 'admin'>(() => {
+    const saved = localStorage.getItem('skp_user_role');
+    return (saved as any) || 'login';
+  });
+  const [pinCode, setPinCode] = useState('');
+  const [showPinModal, setShowPinModal] = useState(false);
+  const [longPressTimer, setLongPressTimer] = useState<any>(null);
+  const [isPressing, setIsPressing] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem('skp_user_role', userRole);
+  }, [userRole]);
+
   // Navigation Tabs state
   type TabType = 'dashboard' | 'paddy_entry' | 'paddy_purchase' | 'stock_milling' | 'quality_finance' | 'labor_wages' | 'executive_insights';
   const [activeTab, setActiveTab] = useState<TabType>('dashboard');
+
+  useEffect(() => {
+    if (userRole === 'worker' && ['dashboard', 'paddy_purchase', 'quality_finance', 'executive_insights'].includes(activeTab)) {
+      setActiveTab('paddy_entry');
+    }
+  }, [userRole, activeTab]);
+
+  useEffect(() => {
+    if (pinCode.length === 4) {
+      if (pinCode === '1234') {
+        setUserRole('admin');
+        setActiveTab('dashboard');
+        setShowPinModal(false);
+        setPinCode('');
+      } else {
+        alert("Invalid Passcode. Please try again.");
+        setPinCode('');
+      }
+    }
+  }, [pinCode]);
+
+  const handleStartPress = () => {
+    setIsPressing(true);
+    const timer = setTimeout(() => {
+      setShowPinModal(true);
+      setIsPressing(false);
+    }, 1500);
+    setLongPressTimer(timer);
+  };
+
+  const handleEndPress = () => {
+    setIsPressing(false);
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      setLongPressTimer(null);
+    }
+  };
+
+  const [demoModeActive, setDemoModeActive] = useState<boolean>(() => {
+    const saved = localStorage.getItem('skp_demo_mode_active');
+    return saved !== 'false'; // Default to true if not set
+  });
+
+  const toggleDemoMode = () => {
+    const nextVal = !demoModeActive;
+    setDemoModeActive(nextVal);
+    localStorage.setItem('skp_demo_mode_active', String(nextVal));
+    
+    if (nextVal) {
+      // Seed mock data
+      setEntries(INITIAL_ENTRIES);
+      setPurchases(INITIAL_PURCHASES);
+      setPaddyMovements(INITIAL_MOVEMENTS);
+      setOpeningStocks(INITIAL_OPENING_STOCKS);
+      setProductions(INITIAL_PRODUCTIONS);
+      setQualityRecords(INITIAL_QUALITY_RECORDS);
+      setLoadings(INITIAL_LOADINGS);
+      setEmployees(INITIAL_EMPLOYEES);
+      setAttendance(INITIAL_ATTENDANCE);
+      setSuppliers(INITIAL_SUPPLIERS);
+      setVarieties(INITIAL_VARIETIES);
+      
+      // Update local storage so page reload doesn't break
+      localStorage.setItem('skp_entries', JSON.stringify(INITIAL_ENTRIES));
+      localStorage.setItem('skp_purchases', JSON.stringify(INITIAL_PURCHASES));
+      localStorage.setItem('skp_movements', JSON.stringify(INITIAL_MOVEMENTS));
+      localStorage.setItem('skp_opening_stocks', JSON.stringify(INITIAL_OPENING_STOCKS));
+      localStorage.setItem('skp_productions', JSON.stringify(INITIAL_PRODUCTIONS));
+      localStorage.setItem('skp_quality_records', JSON.stringify(INITIAL_QUALITY_RECORDS));
+      localStorage.setItem('skp_loadings', JSON.stringify(INITIAL_LOADINGS));
+      localStorage.setItem('skp_employees', JSON.stringify(INITIAL_EMPLOYEES));
+      localStorage.setItem('skp_attendance', JSON.stringify(INITIAL_ATTENDANCE));
+      localStorage.setItem('skp_suppliers', JSON.stringify(INITIAL_SUPPLIERS));
+      localStorage.setItem('skp_varieties', JSON.stringify(INITIAL_VARIETIES));
+      
+      alert("Demo Mode ON: Loaded sample records for display.");
+    } else {
+      // Clear mock data
+      setEntries([]);
+      setPurchases([]);
+      setPaddyMovements([]);
+      setOpeningStocks([]);
+      setProductions([]);
+      setQualityRecords([]);
+      setLoadings([]);
+      setEmployees([]);
+      setAttendance([]);
+      setSuppliers([]);
+      setVarieties([]);
+      
+      // Wipe from local storage
+      localStorage.removeItem('skp_entries');
+      localStorage.removeItem('skp_purchases');
+      localStorage.removeItem('skp_movements');
+      localStorage.removeItem('skp_opening_stocks');
+      localStorage.removeItem('skp_productions');
+      localStorage.removeItem('skp_quality_records');
+      localStorage.removeItem('skp_loadings');
+      localStorage.removeItem('skp_employees');
+      localStorage.removeItem('skp_attendance');
+      localStorage.removeItem('skp_suppliers');
+      localStorage.removeItem('skp_varieties');
+      
+      alert("Demo Mode OFF: All sample data cleared. Ready for your live data!");
+    }
+  };
 
   // Real-time Clock digital display
   const [currentTime, setCurrentTime] = useState('');
@@ -67,61 +187,61 @@ export default function App() {
     return () => clearInterval(timer);
   }, []);
 
-  // Syncing States from LocalStorage / Seed Defaults
+  // Syncing States from LocalStorage / Clean Defaults
   const [entries, setEntries] = useState<PaddyEntry[]>(() => {
     const raw = localStorage.getItem('skp_entries');
-    return raw ? JSON.parse(raw) : INITIAL_ENTRIES;
+    return raw ? JSON.parse(raw) : (demoModeActive ? INITIAL_ENTRIES : []);
   });
 
   const [purchases, setPurchases] = useState<PaddyPurchase[]>(() => {
     const raw = localStorage.getItem('skp_purchases');
-    return raw ? JSON.parse(raw) : INITIAL_PURCHASES;
+    return raw ? JSON.parse(raw) : (demoModeActive ? INITIAL_PURCHASES : []);
   });
 
   const [paddyMovements, setPaddyMovements] = useState<PaddyMovement[]>(() => {
     const raw = localStorage.getItem('skp_movements');
-    return raw ? JSON.parse(raw) : INITIAL_MOVEMENTS;
+    return raw ? JSON.parse(raw) : (demoModeActive ? INITIAL_MOVEMENTS : []);
   });
 
   const [openingStocks, setOpeningStocks] = useState<OpeningStock[]>(() => {
     const raw = localStorage.getItem('skp_opening_stocks');
-    return raw ? JSON.parse(raw) : INITIAL_OPENING_STOCKS;
+    return raw ? JSON.parse(raw) : (demoModeActive ? INITIAL_OPENING_STOCKS : []);
   });
 
   const [productions, setProductions] = useState<ProductionBatch[]>(() => {
     const raw = localStorage.getItem('skp_productions');
-    return raw ? JSON.parse(raw) : INITIAL_PRODUCTIONS;
+    return raw ? JSON.parse(raw) : (demoModeActive ? INITIAL_PRODUCTIONS : []);
   });
 
   const [qualityRecords, setQualityRecords] = useState<QualityRecord[]>(() => {
     const raw = localStorage.getItem('skp_quality_records');
-    return raw ? JSON.parse(raw) : INITIAL_QUALITY_RECORDS;
+    return raw ? JSON.parse(raw) : (demoModeActive ? INITIAL_QUALITY_RECORDS : []);
   });
 
   const [loadings, setLoadings] = useState<Loading[]>(() => {
     const raw = localStorage.getItem('skp_loadings');
-    return raw ? JSON.parse(raw) : INITIAL_LOADINGS;
+    return raw ? JSON.parse(raw) : (demoModeActive ? INITIAL_LOADINGS : []);
   });
 
   const [employees, setEmployees] = useState<Employee[]>(() => {
     const raw = localStorage.getItem('skp_employees');
-    return raw ? JSON.parse(raw) : INITIAL_EMPLOYEES;
+    return raw ? JSON.parse(raw) : (demoModeActive ? INITIAL_EMPLOYEES : []);
   });
 
   const [attendance, setAttendance] = useState<Attendance[]>(() => {
     const raw = localStorage.getItem('skp_attendance');
-    return raw ? JSON.parse(raw) : INITIAL_ATTENDANCE;
+    return raw ? JSON.parse(raw) : (demoModeActive ? INITIAL_ATTENDANCE : []);
   });
 
   // Base list configs
   const [suppliers, setSuppliers] = useState<string[]>(() => {
     const raw = localStorage.getItem('skp_suppliers');
-    return raw ? JSON.parse(raw) : INITIAL_SUPPLIERS;
+    return raw ? JSON.parse(raw) : (demoModeActive ? INITIAL_SUPPLIERS : []);
   });
 
   const [varieties, setVarieties] = useState<string[]>(() => {
     const raw = localStorage.getItem('skp_varieties');
-    return raw ? JSON.parse(raw) : INITIAL_VARIETIES;
+    return raw ? JSON.parse(raw) : (demoModeActive ? INITIAL_VARIETIES : []);
   });
 
   const paddyStorages = ['SILO 1', 'SILO 2', 'SILO 3', 'Paddy Storage 1', 'Paddy Storage 2', 'GODOWN A1'];
@@ -451,8 +571,206 @@ export default function App() {
     }
   };
 
+  if (userRole === 'login') {
+    return (
+      <div className="h-screen w-full bg-slate-950 flex flex-col justify-center items-center p-4 relative overflow-hidden font-sans select-none">
+        {/* Background glowing gradients */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full filter blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full filter blur-3xl" />
+        
+        <div className="relative z-10 w-full max-w-md bg-slate-900 border border-slate-800/80 rounded-3xl p-8 shadow-2xl flex flex-col items-center text-center space-y-8 backdrop-blur-lg">
+          
+          {/* Logo badge with interactive long-press indicators */}
+          <div className="relative">
+            <div 
+              onMouseDown={handleStartPress}
+              onMouseUp={handleEndPress}
+              onMouseLeave={handleEndPress}
+              onTouchStart={handleStartPress}
+              onTouchEnd={handleEndPress}
+              className={`w-20 h-20 bg-gradient-to-tr from-emerald-600 to-emerald-400 text-white rounded-2xl flex flex-col items-center justify-center font-bold shadow-lg select-none cursor-pointer transition-all duration-300 ${
+                isPressing ? 'scale-90 opacity-90 rotate-3 ring-4 ring-emerald-500/30' : 'hover:scale-105 hover:shadow-emerald-500/20 active:scale-95'
+              }`}
+            >
+              <span className="text-2xl font-black tracking-wide leading-none">SKP</span>
+              <span className="text-[8px] uppercase tracking-widest text-emerald-100 font-extrabold mt-1">Logo</span>
+            </div>
+            {isPressing && (
+              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-emerald-400 animate-pulse whitespace-nowrap">
+                Hold to unlock Admin...
+              </div>
+            )}
+          </div>
+
+          <div>
+            <h1 className="text-xl font-black text-white font-sans tracking-tight">SKP RICE MILL</h1>
+            <p className="text-xs text-slate-400 mt-1 uppercase tracking-widest font-bold">Enterprise Management ERP</p>
+          </div>
+
+          {/* Selection Panels */}
+          <div className="w-full space-y-4">
+            
+            {/* Worker Quick Access */}
+            <div className="bg-slate-800/40 border border-slate-800 p-5 rounded-2xl text-left space-y-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-6 h-6 bg-emerald-500/10 text-emerald-400 rounded-lg flex items-center justify-center text-xs font-bold border border-emerald-500/10">
+                  W
+                </div>
+                <h2 className="text-xs font-bold text-white uppercase tracking-wider">Worker Workspace</h2>
+              </div>
+              <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
+                Log paddy truck arrivals, adjust warehouse stocks, update daily parboiled production, and check worker attendance.
+              </p>
+              <button
+                onClick={() => {
+                  setUserRole('worker');
+                  setActiveTab('paddy_entry');
+                }}
+                className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs rounded-xl shadow-md transition-all active:scale-98"
+              >
+                Enter Worker Portal
+              </button>
+            </div>
+
+            {/* Admin entry hint */}
+            <div className="p-3.5 bg-slate-900 border border-slate-800/50 rounded-xl">
+              <span className="text-[10px] text-slate-500 font-bold block">
+                💡 Admin access: Press and hold the SKP logo above for 1.5 seconds.
+              </span>
+            </div>
+
+          </div>
+
+          <div className="text-[10px] text-slate-650 font-bold">
+            SKP Group © 2026. All rights reserved.
+          </div>
+        </div>
+
+        {/* Dynamic PIN Modal */}
+        {showPinModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-sm">
+            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 w-80 max-w-sm text-center shadow-2xl space-y-6">
+              <div>
+                <div className="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-2xl mx-auto flex items-center justify-center mb-3 border border-emerald-500/20">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <h3 className="text-base font-bold text-white font-sans">Admin Verification</h3>
+                <p className="text-xs text-slate-400 mt-1">Enter passcode to unlock admin desk</p>
+              </div>
+
+              {/* Indicator Dots */}
+              <div className="flex justify-center gap-3 py-2">
+                {[0, 1, 2, 3].map((idx) => (
+                  <div 
+                    key={idx} 
+                    className={`w-3.5 h-3.5 rounded-full border transition-all duration-200 ${
+                      pinCode.length > idx 
+                        ? 'bg-emerald-500 border-emerald-500 scale-110 shadow' 
+                        : 'border-slate-700 bg-slate-800'
+                    }`}
+                  />
+                ))}
+              </div>
+
+              {/* Keypad Grid */}
+              <div className="grid grid-cols-3 gap-3">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+                  <button
+                    key={num}
+                    onClick={() => pinCode.length < 4 && setPinCode(pinCode + num)}
+                    className="h-12 w-full rounded-xl bg-slate-800/60 hover:bg-slate-850 text-white font-bold text-sm border border-slate-700/20 active:scale-95 transition-all"
+                  >
+                    {num}
+                  </button>
+                ))}
+                <button
+                  onClick={() => setPinCode('')}
+                  className="h-12 w-full rounded-xl bg-slate-800/30 hover:bg-slate-855 text-rose-400 font-bold text-xs border border-rose-500/10 active:scale-95 transition-all"
+                >
+                  Clear
+                </button>
+                <button
+                  onClick={() => pinCode.length < 4 && setPinCode(pinCode + '0')}
+                  className="h-12 w-full rounded-xl bg-slate-800/60 hover:bg-slate-850 text-white font-bold text-sm border border-slate-700/20 active:scale-95 transition-all"
+                >
+                  0
+                </button>
+                <button
+                  onClick={() => { setShowPinModal(false); setPinCode(''); }}
+                  className="h-12 w-full rounded-xl bg-slate-800/30 hover:bg-slate-855 text-slate-400 font-bold text-xs border border-slate-750/10 active:scale-95 transition-all"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="h-screen w-full bg-slate-50 flex overflow-hidden font-sans text-slate-800">
+      
+      {/* Dynamic PIN Modal in Main Desk (for elevation switch) */}
+      {showPinModal && (
+        <div className="fixed inset-0 z-55 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 w-80 max-w-sm text-center shadow-2xl space-y-6">
+            <div>
+              <div className="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-2xl mx-auto flex items-center justify-center mb-3 border border-emerald-500/20">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <h3 className="text-base font-bold text-white font-sans">Admin Verification</h3>
+              <p className="text-xs text-slate-400 mt-1">Enter passcode to unlock admin desk</p>
+            </div>
+
+            {/* Indicator Dots */}
+            <div className="flex justify-center gap-3 py-2">
+              {[0, 1, 2, 3].map((idx) => (
+                <div 
+                  key={idx} 
+                  className={`w-3.5 h-3.5 rounded-full border transition-all duration-200 ${
+                    pinCode.length > idx 
+                      ? 'bg-emerald-500 border-emerald-500 scale-110 shadow' 
+                      : 'border-slate-700 bg-slate-800'
+                  }`}
+                />
+              ))}
+            </div>
+
+            {/* Keypad Grid */}
+            <div className="grid grid-cols-3 gap-3">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+                <button
+                  key={num}
+                  onClick={() => pinCode.length < 4 && setPinCode(pinCode + num)}
+                  className="h-12 w-full rounded-xl bg-slate-800/60 hover:bg-slate-850 text-white font-bold text-sm border border-slate-700/20 active:scale-95 transition-all"
+                >
+                  {num}
+                </button>
+              ))}
+              <button
+                onClick={() => setPinCode('')}
+                className="h-12 w-full rounded-xl bg-slate-800/30 hover:bg-slate-855 text-rose-400 font-bold text-xs border border-rose-500/10 active:scale-95 transition-all"
+              >
+                Clear
+              </button>
+              <button
+                onClick={() => pinCode.length < 4 && setPinCode(pinCode + '0')}
+                className="h-12 w-full rounded-xl bg-slate-800/60 hover:bg-slate-850 text-white font-bold text-sm border border-slate-700/20 active:scale-95 transition-all"
+              >
+                0
+              </button>
+              <button
+                onClick={() => { setShowPinModal(false); setPinCode(''); }}
+                className="h-12 w-full rounded-xl bg-slate-800/30 hover:bg-slate-855 text-slate-400 font-bold text-xs border border-slate-750/10 active:scale-95 transition-all"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Mobile Sidebar Overlay & Slide-out Drawer */}
       {mobileMenuOpen && (
@@ -476,13 +794,23 @@ export default function App() {
             </div>
             
             {/* Mobile Brand Header */}
-            <div className="p-6 flex items-center gap-3 border-b border-[#18181c]">
-              <div className="w-8 h-8 bg-emerald-600 rounded flex items-center justify-center text-xs font-bold text-white shadow">
+            <div 
+              onMouseDown={handleStartPress}
+              onMouseUp={handleEndPress}
+              onMouseLeave={handleEndPress}
+              onTouchStart={handleStartPress}
+              onTouchEnd={handleEndPress}
+              className="p-6 flex items-center gap-3 border-b border-[#18181c] cursor-pointer select-none hover:bg-slate-900/30 transition"
+              title="Long press to authenticate as Admin"
+            >
+              <div className={`w-8 h-8 rounded flex items-center justify-center text-xs font-bold text-white shadow transition-all duration-200 ${isPressing ? 'bg-emerald-500 scale-105' : 'bg-emerald-600'}`}>
                 SKP
               </div>
               <div>
                 <span className="text-white font-bold text-base tracking-tight block leading-tight">SKP RICE MILL</span>
-                <span className="text-[9px] text-slate-500 font-extrabold uppercase tracking-widest block">Enterprise ERP</span>
+                <span className="text-[9px] text-slate-500 font-extrabold uppercase tracking-widest block">
+                  {isPressing ? 'Hold to unlock admin...' : 'Enterprise ERP'}
+                </span>
               </div>
             </div>
 
@@ -490,13 +818,15 @@ export default function App() {
             <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
               <div className="text-slate-600 text-[9px] font-black uppercase tracking-widest px-2 mb-2">Management</div>
               
-              <button 
-                onClick={() => { setActiveTab('dashboard'); setMobileMenuOpen(false); }}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'dashboard' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
-              >
-                <LayoutDashboard className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'dashboard' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
-                <span>{t('Overview Dashboard')}</span>
-              </button>
+              {userRole === 'admin' && (
+                <button 
+                  onClick={() => { setActiveTab('dashboard'); setMobileMenuOpen(false); }}
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'dashboard' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
+                >
+                  <LayoutDashboard className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'dashboard' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
+                  <span>{t('Overview Dashboard')}</span>
+                </button>
+              )}
               
               <button 
                 onClick={() => { setActiveTab('paddy_entry'); setMobileMenuOpen(false); }}
@@ -506,13 +836,15 @@ export default function App() {
                 <span>{t('Paddy Entry')}</span>
               </button>
               
-              <button 
-                onClick={() => { setActiveTab('paddy_purchase'); setMobileMenuOpen(false); }}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'paddy_purchase' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
-              >
-                <Receipt className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'paddy_purchase' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
-                <span>{t('Paddy Purchase')}</span>
-              </button>
+              {userRole === 'admin' && (
+                <button 
+                  onClick={() => { setActiveTab('paddy_purchase'); setMobileMenuOpen(false); }}
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'paddy_purchase' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
+                >
+                  <Receipt className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'paddy_purchase' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
+                  <span>{t('Paddy Purchase')}</span>
+                </button>
+              )}
               
               <button 
                 onClick={() => { setActiveTab('stock_milling'); setMobileMenuOpen(false); }}
@@ -524,13 +856,15 @@ export default function App() {
       
               <div className="text-slate-600 text-[9px] font-black uppercase tracking-widest px-2 mt-6 mb-2">Systems & Analytics</div>
       
-              <button 
-                onClick={() => { setActiveTab('quality_finance'); setMobileMenuOpen(false); }}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'quality_finance' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
-              >
-                <ShieldCheck className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'quality_finance' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
-                <span>{t('Quality & Finance')}</span>
-              </button>
+              {userRole === 'admin' && (
+                <button 
+                  onClick={() => { setActiveTab('quality_finance'); setMobileMenuOpen(false); }}
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'quality_finance' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
+                >
+                  <ShieldCheck className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'quality_finance' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
+                  <span>{t('Quality & Finance')}</span>
+                </button>
+              )}
               
               <button 
                 onClick={() => { setActiveTab('labor_wages'); setMobileMenuOpen(false); }}
@@ -540,23 +874,36 @@ export default function App() {
                 <span>{t('Labor & Wages')}</span>
               </button>
               
-              <button 
-                onClick={() => { setActiveTab('executive_insights'); setMobileMenuOpen(false); }}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'executive_insights' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
-              >
-                <Mic className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'executive_insights' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
-                <span>{t('Voice & Insights')}</span>
-              </button>
+              {userRole === 'admin' && (
+                <button 
+                  onClick={() => { setActiveTab('executive_insights'); setMobileMenuOpen(false); }}
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'executive_insights' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
+                >
+                  <Mic className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'executive_insights' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
+                  <span>{t('Voice & Insights')}</span>
+                </button>
+              )}
             </nav>
      
             {/* Mobile User Status Card */}
             <div className="p-4 mt-auto border-t border-[#18181c]">
-              <div className="flex items-center gap-3 p-2.5 bg-[#121215] rounded-xl border border-[#1e1e24]/60">
-                <div className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-xs font-bold text-emerald-400">SK</div>
-                <div className="overflow-hidden">
-                  <p className="text-xs text-white font-medium truncate">{t('SKP Admin')}</p>
-                  <p className="text-[10px] text-slate-500">{t('Mill Manager Account')}</p>
+              <div className="flex items-center justify-between gap-3 p-2.5 bg-[#121215] rounded-xl border border-[#1e1e24]/60">
+                <div className="flex items-center gap-2.5 overflow-hidden">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border ${userRole === 'admin' ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' : 'bg-blue-500/20 border-blue-500/50 text-blue-400'}`}>
+                    {userRole === 'admin' ? 'AD' : 'WK'}
+                  </div>
+                  <div className="overflow-hidden">
+                    <p className="text-xs text-white font-medium truncate">{userRole === 'admin' ? t('SKP Admin') : t('SKP Worker')}</p>
+                    <p className="text-[10px] text-slate-500">{userRole === 'admin' ? t('Mill Manager Account') : t('Worker Portal')}</p>
+                  </div>
                 </div>
+                
+                <button 
+                  onClick={() => { setUserRole('login'); setMobileMenuOpen(false); }}
+                  className="p-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-450 hover:text-white border border-slate-700/50"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
               </div>
             </div>
           </aside>
@@ -564,15 +911,25 @@ export default function App() {
       )}
 
       {/* Navigation Sidebar (Professional Polish Theme, Emerald) - Hidden on mobile/tablets */}
-      <aside className="w-64 bg-[#0c0c0e] border-r border-[#18181c] flex flex-col shrink-0 hidden lg:flex">
+      <aside className="w-64 bg-[#0c0c0e] border-r border-[#18181c] flex flex-col shrink-0 hidden lg:flex select-none">
         {/* Brand Header */}
-        <div className="p-6 flex items-center gap-3 border-b border-[#18181c] mb-4">
-          <div className="w-8 h-8 bg-emerald-600 rounded flex items-center justify-center text-xs font-bold text-white shadow">
+        <div 
+          onMouseDown={handleStartPress}
+          onMouseUp={handleEndPress}
+          onMouseLeave={handleEndPress}
+          onTouchStart={handleStartPress}
+          onTouchEnd={handleEndPress}
+          className="p-6 flex items-center gap-3 border-b border-[#18181c] mb-4 cursor-pointer select-none hover:bg-slate-900/30 transition"
+          title="Long press to authenticate as Admin"
+        >
+          <div className={`w-8 h-8 rounded flex items-center justify-center text-xs font-bold text-white shadow transition-all duration-200 ${isPressing ? 'bg-emerald-500 scale-105 animate-pulse' : 'bg-emerald-600'}`}>
             SKP
           </div>
           <div>
             <span className="text-white font-bold text-base tracking-tight block leading-tight">SKP RICE MILL</span>
-            <span className="text-[9px] text-slate-500 font-extrabold uppercase tracking-widest block">Enterprise ERP</span>
+            <span className="text-[9px] text-slate-500 font-extrabold uppercase tracking-widest block">
+              {isPressing ? 'Hold to unlock admin...' : 'Enterprise ERP'}
+            </span>
           </div>
         </div>
         
@@ -580,13 +937,15 @@ export default function App() {
         <nav className="flex-1 px-4 space-y-1">
           <div className="text-slate-600 text-[9px] font-black uppercase tracking-widest px-2 mb-2">Management</div>
           
-          <button 
-            onClick={() => setActiveTab('dashboard')}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'dashboard' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
-          >
-            <LayoutDashboard className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'dashboard' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
-            <span>{t('Overview Dashboard')}</span>
-          </button>
+          {userRole === 'admin' && (
+            <button 
+              onClick={() => setActiveTab('dashboard')}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'dashboard' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
+            >
+              <LayoutDashboard className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'dashboard' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
+              <span>{t('Overview Dashboard')}</span>
+            </button>
+          )}
           
           <button 
             onClick={() => setActiveTab('paddy_entry')}
@@ -596,13 +955,15 @@ export default function App() {
             <span>{t('Paddy Entry')}</span>
           </button>
           
-          <button 
-            onClick={() => setActiveTab('paddy_purchase')}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'paddy_purchase' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
-          >
-            <Receipt className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'paddy_purchase' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
-            <span>{t('Paddy Purchase')}</span>
-          </button>
+          {userRole === 'admin' && (
+            <button 
+              onClick={() => setActiveTab('paddy_purchase')}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'paddy_purchase' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
+            >
+              <Receipt className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'paddy_purchase' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
+              <span>{t('Paddy Purchase')}</span>
+            </button>
+          )}
           
           <button 
             onClick={() => setActiveTab('stock_milling')}
@@ -614,13 +975,15 @@ export default function App() {
   
           <div className="text-slate-600 text-[9px] font-black uppercase tracking-widest px-2 mt-6 mb-2">Systems & Analytics</div>
   
-          <button 
-            onClick={() => setActiveTab('quality_finance')}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'quality_finance' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
-          >
-            <ShieldCheck className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'quality_finance' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
-            <span>{t('Quality & Finance')}</span>
-          </button>
+          {userRole === 'admin' && (
+            <button 
+              onClick={() => setActiveTab('quality_finance')}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'quality_finance' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
+            >
+              <ShieldCheck className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'quality_finance' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
+              <span>{t('Quality & Finance')}</span>
+            </button>
+          )}
           
           <button 
             onClick={() => setActiveTab('labor_wages')}
@@ -630,23 +993,37 @@ export default function App() {
             <span>{t('Labor & Wages')}</span>
           </button>
           
-          <button 
-            onClick={() => setActiveTab('executive_insights')}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'executive_insights' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
-          >
-            <Mic className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'executive_insights' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
-            <span>{t('Voice & Insights')}</span>
-          </button>
+          {userRole === 'admin' && (
+            <button 
+              onClick={() => setActiveTab('executive_insights')}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all duration-150 text-left group ${activeTab === 'executive_insights' ? 'bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400 font-extrabold shadow-sm' : 'text-slate-400 hover:bg-[#18181b] hover:text-slate-200'}`}
+            >
+              <Mic className={`w-4 h-4 shrink-0 transition-colors ${activeTab === 'executive_insights' ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
+              <span>{t('Voice & Insights')}</span>
+            </button>
+          )}
         </nav>
  
         {/* User Status Card */}
         <div className="p-4 mt-auto border-t border-slate-800">
-          <div className="flex items-center gap-3 p-2.5 bg-slate-800/40 rounded-lg border border-slate-800/80">
-            <div className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-xs font-bold text-emerald-400">SK</div>
-            <div className="overflow-hidden">
-              <p className="text-xs text-white font-medium truncate">{t('SKP Admin')}</p>
-              <p className="text-[10px] text-slate-500">{t('Mill Manager Account')}</p>
+          <div className="flex items-center justify-between gap-3 p-2.5 bg-slate-800/40 rounded-lg border border-slate-800/80">
+            <div className="flex items-center gap-2.5 overflow-hidden">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border ${userRole === 'admin' ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' : 'bg-blue-500/20 border-blue-500/50 text-blue-400'}`}>
+                {userRole === 'admin' ? 'AD' : 'WK'}
+              </div>
+              <div className="overflow-hidden">
+                <p className="text-xs text-white font-medium truncate">{userRole === 'admin' ? t('SKP Admin') : t('SKP Worker')}</p>
+                <p className="text-[10px] text-slate-500">{userRole === 'admin' ? t('Administrator') : t('Worker Portal')}</p>
+              </div>
             </div>
+            
+            <button 
+              onClick={() => setUserRole('login')}
+              className="p-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white border border-slate-700/50 transition-colors"
+              title="Lock/Logout Portal"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
       </aside>
@@ -688,6 +1065,20 @@ export default function App() {
             <div className="bg-[#f4f4f5] rounded-xl py-1.5 px-3 border border-[#e4e4e7] hidden sm:flex items-center gap-2">
               <span className="font-mono text-[10px] md:text-xs font-black text-stone-600">{currentTime}</span>
             </div>
+
+            {userRole === 'admin' && (
+              <button
+                onClick={toggleDemoMode}
+                className={`px-3 py-1.5 text-[10px] md:text-xs font-bold rounded-xl border transition-all active:scale-95 ${
+                  demoModeActive 
+                    ? 'bg-emerald-600 border-emerald-600 text-white shadow-xs' 
+                    : 'bg-white hover:bg-slate-105 text-slate-600 border-slate-200 shadow-2xs'
+                }`}
+                title="Toggle sample demo data"
+              >
+                {demoModeActive ? "Demo Mode: ON" : "Demo Mode: OFF"}
+              </button>
+            )}
             
             <div className="text-[9px] md:text-[10px] bg-emerald-50 text-emerald-800 font-extrabold tracking-widest px-2.5 md:px-3 py-1.5 rounded-full uppercase border border-emerald-200/60 hidden sm:inline-block shadow-3xs">
               {t('Active Workspace')}
